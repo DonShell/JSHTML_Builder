@@ -1,104 +1,75 @@
-#JSHTML_Builder
-##Descrição
-A classe JSHTML_Builder é uma estrutura em JavaScript que facilita a construção dinâmica de elementos HTML por meio de objetos. Ela oferece métodos para criar elementos HTML, adicionar conteúdo, definir atributos, e manipular a visibilidade dos elementos.
 
-##Instruções de Uso
--Criação de Elementos: Utilize os métodos fornecidos para criar elementos HTML dinamicamente.
+# JSHTML_Builder
 
--Adição de Conteúdo: Adicione conteúdo aos elementos criados usando os métodos apropriados.
+## Descrição
 
--Definição de Atributos: Defina atributos como IDs e classes para os elementos conforme necessário.
+A classe Element é uma estrutura em JavaScript que facilita a construção dinâmica de elementos HTML por meio de objetos. Ela oferece métodos para criar elementos HTML, adicionar conteúdo, definir atributos, e manipular a visibilidade dos elementos.
 
--Manipulação de Visibilidade: Altere a visibilidade dos elementos conforme necessário.
+## Instruções de Uso
 
-##Exemplo de Uso
-javascript:
+- Criação de Elementos: Utilize os métodos fornecidos para criar elementos HTML dinamicamente.
 
-```javascript
+- Adição de Conteúdo: Adicione conteúdo aos elementos criados usando os métodos apropriados.
 
-// Cria um novo elemento JSHTML_Builder
+- Definição de Atributos: Defina atributos como IDs e classes para os elementos conforme necessário.
 
-const builder = new JSHTML_Builder(parentElement);
+- Manipulação de Visibilidade: Altere a visibilidade dos elementos conforme necessário.
 
-
-// Adiciona um elemento de texto com o conteúdo "Hello, world!"
-
-builder.addTextElement("Hello, world!");
-
-
-// Adiciona um elemento de imagem com o URL da imagem
-
-builder.addImageElement("https://example.com/image.jpg");
-
-
-// Define o ID do elemento principal
-
-builder.setId("main");
-
-
-// Exibe o elemento na página HTML
-
-builder.show();
-
-
-// Oculta o elemento da página HTML
-
-builder.hide();
-
-```
 
 Direitos autorais da descrição por ChatGPT-3.5 (OpenAI) revisado por DonShell 30/03/2024.
 
-
 -------------------------------------------------------------------
-#JSHTML_Builder
 
-##Description
+# JSHTML_Builder
 
-The JSHTML_Builder class is a JavaScript structure that facilitates dynamic construction of HTML elements through objects. It provides methods for creating HTML elements, adding content, setting attributes, and manipulating element visibility.
+## Description
 
-#Usage Instructions
+The Element class is a JavaScript structure that facilitates dynamic construction of HTML elements through objects. It provides methods for creating HTML elements, adding content, setting attributes, and manipulating element visibility.
 
--Creating Elements: Utilize the provided methods to dynamically create HTML elements.
+## Usage Instructions
 
--Adding Content: Add content to the created elements using the appropriate methods.
+- Creating Elements: Utilize the provided methods to dynamically create HTML elements.
 
--Setting Attributes: Set attributes such as IDs and classes for the elements as needed.
+- Adding Content: Add content to the created elements using the appropriate methods.
 
--Manipulating Visibility: Alter the visibility of elements as necessary.
+- Setting Attributes: Set attributes such as IDs and classes for the elements as needed.
 
-#Example Usage
+- Manipulating Visibility: Alter the visibility of elements as necessary.
+
+Copyright © Text by ChatGPT-3.5 (OpenAI) reviewed by DonShell on 30/03/2024.
+
+# Example Usage | Exemplo de Uso
 javascript
 ```javascript
-
-// Create a new JSHTML_Builder element
-
-const builder = new JSHTML_Builder(parentElement);
-
+// Create new JSHTML_Builder
+parent = new BlockOfElements(null);
 
 // Add a text element with content "Hello, world!"
-
-builder.addTextElement("Hello, world!");
-
+welcome = new TextElement("Hello, world!");
 
 // Add an image element with the image URL
-
-builder.addImageElement("https://example.com/image.jpg");
-
+image = new ImageElement("https://example.com/image.jpg");
 
 // Set the ID of the main element
+parent.setId("main");
 
-builder.setId("main");
+// This element will be appended to the body of the page
+parent.declareOrphan(body);
 
+// Add children
+parent.addElement(welcome);
+parent.addElement(image);
 
-// Show the element on the HTML page
-
-builder.show();
-
+// Display the element on the HTML page
+parent.show();
 
 // Hide the element from the HTML page
-
 builder.hide();
 
+// All classes extend the Element class, so you can use:
+parentElement1 = new BlockOfElements(null);
+parentElement2 = new BlockOfElements(null);
+parentElement3 = new BlockOfElements(null);
+
+addElements(parentElement1, parentElement2, parentElement3);
 ```
-Copyright © Text by ChatGPT-3.5 (OpenAI) reviewed by DonShell on 30/03/2024.
