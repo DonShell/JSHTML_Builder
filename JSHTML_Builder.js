@@ -6,6 +6,7 @@ class Element {
 	static IMAGE_CATEGORY = 'Image';
 	static BLOCK_CATEGORY = 'Block';
 	static ORPHANAGE_CATEGORY = 'Orphanage';
+	static VERSION = 0.1;
 
 	content = null;
 	id = null;
