@@ -1,6 +1,7 @@
+//VERSION: 0.1
+//write by: DonShell - 03/30/2024
 
 // Abstract Class
-
 class Element {
 	static TEXT_CATEGORY = 'Text';
 	static IMAGE_CATEGORY = 'Image';
@@ -45,7 +46,8 @@ class Element {
 
 	//
 	static createFromJSON(element, parent) {
-   		throw "error: createFromJSON root function not declared";
+   		//throw "error: createFromJSON root function not declared";
+   		return JSHTML_Builder.importJson(element, parent);
     }
 
 	setParent(parent)
@@ -104,7 +106,7 @@ class Element {
 		}
 	}
 
-	setThisInHTML(visible) 
+	setThisInHTML(visible = true) 
 	{
 		this.validateToSetInHTML(this);
 		this.setId();
@@ -157,6 +159,15 @@ class Element {
 		this.HTMLelement = null;
 	}
 
+	show()
+	{
+		this.makeVisible(true);
+	}
+	hide()
+	{
+		this.makeVisible(false);
+	}
+
 	makeVisible(choice) 
 	{
 		if (choice) 
@@ -185,7 +196,7 @@ class Orphanage
 {
 	idPrefix = "orphan_"; 
 
-	constructor(htmlParent, element = null)
+	constructor(htmlParent = document.body, element = null)
 	{
 		if (!htmlParent && htmlParent.nodeType == undefined)
 		{
@@ -220,6 +231,9 @@ class Orphanage
 	setInHTML(element)
 	{
 		this.HTMLelement.appendChild(element.getHTMLElement());
+		this.HTMLelement.style.display = 'block';
+
+
 	}
 	addElement(element)
 	{
@@ -251,21 +265,9 @@ class BlockOfElements extends Element
             });
             return parentBlock;
 		}
-		//if it's a text
-		else if(json.text)
-		{
-			return TextElement.createFromJSON(json,parent);
-		}
-		//if it's an image	
-		else if(json.image)
-		{
-			return ImageElement.createFromJSON(json,parent);
-		}
 		else
 		{ 
-			console.log("Unknown JSON element type:", json);
-			//throw "Unknown Json element type!"
-        	return null;
+	        return JSHTML_Builder.importJson(json, parent);
 		}
         return null;
 
@@ -427,8 +429,10 @@ class BE_Heading extends BlockOfElements
 	            }
 	        });
 	        return parentBlock;
-	    } else {
-	        return BlockOfElements.createFromJSON(json, parent);
+	    } 
+	    else 
+	    {
+	        return JSHTML_Builder.importJson(json, parent);
 	    }
 	}
 
@@ -463,4 +467,48 @@ class BE_Heading extends BlockOfElements
 	{
 		super.addElement(element)
 	}
+}
+
+
+class JSHTML_Builder
+{
+	static importJson(json, parent = null)
+	{
+
+		//if text
+		if(json.text || json.TextElement || typeof json == 'string')
+		{
+			return TextElement.createFromJSON(json,parent);
+		}
+		//if image	
+		if(json.image || json.ImageElement)
+		{
+			return ImageElement.createFromJSON(json,parent);
+		}
+		//if BlockOfElements	
+		if(json.BlockOfElements)
+		{
+			return BlockOfElements.createFromJSON(json,parent);
+		}
+		//if BE_Heading	
+		if(json.BE_Heading)
+		{
+			return BE_Heading.createFromJSON(json,parent);
+		}
+		//if ListSelect	
+		if(json.ListSelect)
+		{
+			return ListSelect.createFromJSON(json,parent);
+		}
+		//if ClickShow	
+		if(json.ClickShow)
+		{
+			return ClickShow.createFromJSON(json,parent);
+		}
+
+		console.log("Unknown JSON element type:", json);
+		//throw "Unknown Json element type!"
+    	return null;
+	}
+
 }

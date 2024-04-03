@@ -21,21 +21,9 @@ class ListSelect extends BE_Heading {
 	        });
 	        return parentBlock;
 	    } 
-	    else if ( typeof json === 'string')
-	    {
-	        return TextElement.createFromJSON(json, parent);
-	    }
 	    else
 	    {	
-	    	try
-	    	{
-	        	return BlockOfElements.createFromJSON(json, parent);
-	    	}
-	    	catch(e)
-	    	{
-	    		console.log(e);
-	    		return null;
-	    	}
+	        return JSHTML_Builder.importJson(json, parent);
 	    }
 	}
 

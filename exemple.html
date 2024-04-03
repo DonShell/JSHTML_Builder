@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<style>
+		.selected
+		{
+			border: 1px #000 solid;
+		}
+	</style>
+	<title>
+
+	</title>
+</head>
+<body>
+
+	<script type="text/javascript" src="JSHTML_Builder.js"></script>
+	<script type="text/javascript" src="ListSelect.js"></script>
+	<script type="text/javascript" src="ClickShow.js"></script>
+	
+	<script type="text/javascript">
+		
+		selectlist = new ListSelect(null,"lista");
+		selectlist.addElement(new TextElement(null, "item 0"));
+		genereteListTest(selectlist,5);
+
+		
+
+		clickshow = new ClickShow(null,"lista 2");
+		clickshow.addElement(new TextElement(null, "item 0"));
+		genereteListTest(clickshow,4);
+		
+
+
+		clickshowSub = new ClickShow(null,"lista 3");
+		genereteListAndSubList(clickshowSub,4);
+
+		
+
+		page = new BlockOfElements(null);
+		page.addElement( selectlist );
+		page.addElement( clickshow );
+		page.addElement(clickshowSub);
+
+		page.declareOrphan();
+
+		 page.setThisInHTML();
+		// clickshow.setThisInHTML();
+		// selectlist.setThisInHTML();
+
+
+		 function genereteListTest(elementParent,length)
+		 {
+		 	for (var i = 1; i <= length; i++) {
+		 		elementParent.addElement(new TextElement(null, "item "+ i));
+		 	}
+		 }
+		 function genereteListAndSubList(elementParent,length)
+		 {
+		 	for (var i = 1; i <= length; i++) {
+		 		const subList = new elementParent.constructor(
+		 			elementParent,"sublist "+ i
+		 		);
+		 		genereteListTest(subList,length);
+		 		elementParent.addElement(subList);
+		 	}
+		 }
+
+	</script>
+
+</body>
+</html>
