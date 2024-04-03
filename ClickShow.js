@@ -3,11 +3,12 @@
 //BlocoDeElementos para com tratamento especial para title
 class ClickShow extends BE_Heading 
 {	
+	static PREDEFINITION_visibleContent = false;
 	//override
-	constructor(parent, title,clickToShow = true,visibleContent = false) 
+	constructor(parent, title,visibleContent = ClickShow.PREDEFINITION_visibleContent) 
 	{
 		super(parent, title);
-		this.clickToShow(clickToShow);
+		this.clickToShow(true);
 		this.makeVisibleContent(visibleContent);
 	}
 
@@ -21,14 +22,13 @@ class ClickShow extends BE_Heading
       		const ElementBlockParent = new ClickShow(
         		parent, 
         		json.ClickShow.title,
-        		Boolean(json.ClickShow.clickToShowEnabled),
         		Boolean(json.ClickShow.contentVisible)
         	);
         	json.ClickShow.content.forEach(
         		item => 
         		{
-	        		const content = ClickShow.criarAPartirDeJSON(item,ElementBlockParent);
-	            	ElementBlockParent.adicionarElemento(content);
+	        		const content = JSHTML_Builder.importJson(item,ElementBlockParent);
+	            	ElementBlockParent.addElement(content);
    				}
    			);
             return ElementBlockParent;
@@ -40,9 +40,9 @@ class ClickShow extends BE_Heading
 	}
 
 	//override
-	addElements(element)
+	addElement(element)
 	{
-		super.addElements(element);
+		super.addElement(element);
 		element.setId();
 		element.makeVisible(this.visibleContent);
 	} 

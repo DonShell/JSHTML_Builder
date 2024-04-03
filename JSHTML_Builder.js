@@ -45,9 +45,17 @@ class Element {
 	}
 
 	//
-	static createFromJSON(element, parent) {
+	static createFromJSON(json, parent) {
    		//throw "error: createFromJSON root function not declared";
-   		return JSHTML_Builder.importJson(element, parent);
+   		return JSHTML_Builder.importJson(json, parent);
+    }
+
+    static setAtributesFromJSON(element,json)
+    {
+		if(json.classElement)
+		{
+			element.addClass(json.classElement);
+		}
     }
 
 	setParent(parent)
@@ -138,14 +146,18 @@ class Element {
 		if (parentId !== undefined) 
 		{
 			parentDiv = document.getElementById(parentId);
-		} else {
+		} 
+		else 
+		{
 			parentDiv = document.body;
 		}
 
 		if (parentDiv === null) 
 		{
 			throw new Error("'parentId' does not exist");
-		} else {
+		} 
+		else 
+		{
 			parentDiv.appendChild(this.HTMLelement);
 		}
 
@@ -166,6 +178,17 @@ class Element {
 	hide()
 	{
 		this.makeVisible(false);
+	}
+
+
+	addClass(className)
+	{
+    	this.getHTMLElement().classList.add(className);
+	}
+
+	removeClass(className)
+	{
+    	this.getHTMLElement().classList.remove(className);
 	}
 
 	makeVisible(choice) 
@@ -360,7 +383,9 @@ class ImageElement extends Element
 
 	//override
 	static createFromJSON(json, parent) {
-		return new ImageElement(parent,json.image);
+		const element = new ImageElement(parent,json.image);
+		Element.setAtributesFromJSON(element,json)
+		return element;
     }
 	createHTML() 
 	{
@@ -385,6 +410,10 @@ class TextElement extends Element
 		if(json.text)
 		{
 			return new TextElement(content,json.text);
+		}
+		else if(json.TextElement)
+		{
+			return new TextElement(content,json.TextElement);
 		}
 		else if (typeof json === 'string')
 		{
