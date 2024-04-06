@@ -44,18 +44,53 @@ class Element {
 		this.createHTML();
 	}
 
-	//
+
 	static createFromJSON(json, parent) {
    		//throw "error: createFromJSON root function not declared";
    		return JSHTML_Builder.importJson(json, parent);
     }
 
-    static setAtributesFromJSON(element,json)
+    importAtributesFromJSON(json)
     {
 		if(json.classElement)
 		{
-			element.addClass(json.classElement);
+			this.addClass(json.classElement);
 		}
+		if(json.id)
+		{
+			this.setId(json.id);
+		}
+		if(json.otherVariables)
+		{
+			Object.keys(json.othersVariables).forEach(key => 
+			{
+			 	this.setVariable(key,json.otherVariables[key],json.forceOtherVariables);
+			});
+		}
+    }
+
+    setVariable(name,value,force = false)
+    {
+    	if (!this.isUniqueVariableName(name)) 
+    	{
+    		if(force)
+    		{
+				setVariable(name + "_",value,force);
+    		}
+            else
+            {
+            	console.error(`Variable name "${name}" is not unique.`);
+            }
+        }
+        else
+        {
+	    	this[name] = value;
+	 	}
+    }
+
+    isUniqueVariableName(name)
+    {
+    	return !(Object.getOwnPropertyNames(this.constructor.prototype).includes(name))
     }
 
 	setParent(parent)
@@ -279,20 +314,23 @@ class BlockOfElements extends Element
 	static createFromJSON(json, parent = null) {
 
 		//if it's a block of elements
-		if (json.blockElements && Array.isArray(json.blockElements))
+		if (json.type == "blockElements")
 		{
         	const parentBlock = new BlockOfElements(parent);
-        	json.blockElements.forEach(item => {
-            	const content = BlockOfElements.createFromJSON(item,parentBlock);
-            	parentBlock.addElement(content);
-            });
+        	if(Array.isArray(json.content))
+        	{
+	        	json.content.forEach(item => {
+	            	const content = BlockOfElements.createFromJSON(item,parentBlock);
+	            	parentBlock.addElement(content);
+	            });
+        	}
             return parentBlock;
 		}
 		else
 		{ 
-	        return JSHTML_Builder.importJson(json, parent);
+	        console.log("Error: to BlockOfElements use json.type = 'BlockOfElements'");
+			return null;
 		}
-        return null;
 
     }
 	
@@ -383,9 +421,16 @@ class ImageElement extends Element
 
 	//override
 	static createFromJSON(json, parent) {
-		const element = new ImageElement(parent,json.image);
-		Element.setAtributesFromJSON(element,json)
-		return element;
+		//validate
+		if(json.type == "ImageElement")
+		{
+			return new ImageElement(parent,json.content);
+		}
+		else
+		{
+			console.log("Error: to ImageElement use json.type = 'ImageElement'")
+			return null;
+		}
     }
 	createHTML() 
 	{
@@ -405,19 +450,20 @@ class TextElement extends Element
 	}
 
 	//override
-	static createFromJSON(json,content)
+	static createFromJSON(json,parent)
 	{
-		if(json.text)
+		if(json.type == "TextElement")
 		{
-			return new TextElement(content,json.text);
+			if (json.text)
+			{
+				json.content = json.text;
+			}
+			return new TextElement(parent,json.content);
 		}
-		else if(json.TextElement)
+		else
 		{
-			return new TextElement(content,json.TextElement);
-		}
-		else if (typeof json === 'string')
-		{
-			return new TextElement(content,json);
+			console.log("Error: to TextElement, use json.type = 'TextElement'")
+			return null;
 		}
 	}
     
@@ -445,23 +491,25 @@ class BE_Heading extends BlockOfElements
 	static createFromJSON(json, parent = null) {
 
 	    //if it's a block of elements
-	    if (json.BlockOfElements && Array.isArray(json.BlockOfElements) && json.BlockOfElements[0].title) {
+	    if ((json.type == "BE_Heading") && json.title) {
 	        
 	        const parentBlock = new BE_Heading(
 	            parent, 
-	            json.BlockOfElements[0].title,
+	            json.title,
 	        );
-	        json.blockElements.forEach(item => {
-	            if (!item.title) {
-	                const content = BE_Heading.createFromJSON(item, parentBlock);
+	        if(Array.isArray(json.content))
+	        {
+	        	json.content.forEach(item => {
+	                const content = JSHTML_Builder.importJson(item, parentBlock);
 	                parentBlock.addElement(content);
-	            }
-	        });
+	       		});
+	        }
 	        return parentBlock;
 	    } 
 	    else 
 	    {
-	        return JSHTML_Builder.importJson(json, parent);
+	    	console.log("Error: to BE_Heading, use json.type = 'BE_Heading'");
+			return null;
 	    }
 	}
 
@@ -503,41 +551,82 @@ class JSHTML_Builder
 {
 	static importJson(json, parent = null)
 	{
+		var element = null;
+	
 
-		//if text
-		if(json.text || json.TextElement || typeof json == 'string')
+		json = JSHTML_Builder.fixAbbreviatedNames(json);
+
+		switch(json.type)
 		{
-			return TextElement.createFromJSON(json,parent);
+			case "TextElement":
+
+				element = TextElement.createFromJSON(json,parent);
+				break;
+
+			case "ImageElement":
+
+				element = ImageElement.createFromJSON(json,parent);
+				break;
+
+			case "BlockOfElements":
+				
+				element = BlockOfElements.createFromJSON(json,parent);
+				break;
+
+			case "BE_Heading":
+
+				element = BE_Heading.createFromJSON(json,parent);
+				break;
+
+			case "ListSelect":
+
+				element = ListSelect.createFromJSON(json,parent);
+				break;
+
+			case "ClickShow":
+
+				element = ClickShow.createFromJSON(json,parent);
+				break;
+
+			default:
+			console.log("Unknown JSON element type:", json);
+			//throw "Unknown Json element type!"
+		}
+		if(element)
+		{
+			element.importAtributesFromJSON(json);
+		}
+		return element;
+//
+	}
+
+
+	static fixAbbreviatedNames(json)
+	{
+		if(json.type == "text" || json.text || typeof json == 'string')
+		{
+			if (typeof json === 'string' )
+			{
+				const text = json;
+				json = new Object();
+				json.content = text;
+			}
+			else if (json.text)
+			{
+				json.content = json.text;
+			}
+			json.type = "TextElement";
 		}
 		//if image	
-		if(json.image || json.ImageElement)
+		else if(json.type == "image" || json.image)
 		{
-			return ImageElement.createFromJSON(json,parent);
+			if (json.image)
+			{
+				json.content = json.image;
+			}
+			json.type = "ImageElement";
 		}
-		//if BlockOfElements	
-		if(json.BlockOfElements)
-		{
-			return BlockOfElements.createFromJSON(json,parent);
-		}
-		//if BE_Heading	
-		if(json.BE_Heading)
-		{
-			return BE_Heading.createFromJSON(json,parent);
-		}
-		//if ListSelect	
-		if(json.ListSelect)
-		{
-			return ListSelect.createFromJSON(json,parent);
-		}
-		//if ClickShow	
-		if(json.ClickShow)
-		{
-			return ClickShow.createFromJSON(json,parent);
-		}
-
-		console.log("Unknown JSON element type:", json);
-		//throw "Unknown Json element type!"
-    	return null;
+		return json;
 	}
 
 }

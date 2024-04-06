@@ -17,25 +17,29 @@ class ClickShow extends BE_Heading
 	static createFromJSON(json, parent = null) {
 
 		//se for um bloco de elementos
-		if (json.ClickShow && Array.isArray(json.ClickShow.content) && json.ClickShow.title)
+		if ((json.type == "ClickShow") && json.title)
 		{
       		const ElementBlockParent = new ClickShow(
         		parent, 
-        		json.ClickShow.title,
-        		Boolean(json.ClickShow.contentVisible)
+        		json.title,
+        		Boolean(json.contentVisible)
         	);
-        	json.ClickShow.content.forEach(
-        		item => 
-        		{
-	        		const content = JSHTML_Builder.importJson(item,ElementBlockParent);
-	            	ElementBlockParent.addElement(content);
-   				}
-   			);
+        	if(Array.isArray(json.content))
+        	{
+	        	json.content.forEach(
+	        		item => 
+	        		{
+		        		const content = JSHTML_Builder.importJson(item,ElementBlockParent);
+		            	ElementBlockParent.addElement(content);
+	   				}
+	   			);
+	        }
             return ElementBlockParent;
 		}
 		else
 		{
-	        return JSHTML_Builder.importJson(json, parent);
+	        console.log("Error: to ImageElement use json.type = 'ImageElement'");
+			return null;
 		}
 	}
 

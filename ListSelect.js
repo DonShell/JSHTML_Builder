@@ -4,26 +4,30 @@ class ListSelect extends BE_Heading {
 	static createFromJSON(json, parent = null)
 	{
 	    //if it's a block of elements
-	    if (json.ListSelect && Array.isArray(json.ListSelect.content) && json.ListSelect.title) {
+	    if (json.type == "ListSelect" && json.title) {
 	        
 	        const parentBlock = new ListSelect(
 	            parent, 
-	            json.ListSelect.title,
-	            json.ListSelect.class
+	            json.title,
+	            json.classSelected
 	        );
-	        json.ListSelect.content.forEach(item => {
-	            const content = ListSelect.createFromJSON(item, parentBlock);
-	            if(content)
-	            {
-	              	parentBlock.addElement(content);
-	            }
-	            
-	        });
+	        if(Array.isArray(json.content))
+	        {
+		        json.content.forEach(item => {
+		            const content = ListSelect.createFromJSON(item, parentBlock);
+		            if(content)
+		            {
+		              	parentBlock.addElement(content);
+		            }
+		            
+		        });
+	        }
 	        return parentBlock;
 	    } 
 	    else
 	    {	
-	        return JSHTML_Builder.importJson(json, parent);
+	        console.log("Error: to ImageElement use json.type = 'ImageElement'");
+			return null;
 	    }
 	}
 
