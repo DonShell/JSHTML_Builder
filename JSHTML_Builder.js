@@ -8,6 +8,14 @@ class Element {
 	static BLOCK_CATEGORY = 'Block';
 	static ORPHANAGE_CATEGORY = 'Orphanage';
 	static VERSION = 0.1;
+	
+	static HTML_ELEMENT_TYPE = 'div';
+
+	getHTMLElementType()
+	{
+		return Element.HTML_ELEMENT_TYPE;
+	}
+
 
 	content = null;
 	id = null;
@@ -102,15 +110,36 @@ class Element {
 		}
 	}
 
+	setEnabled(enabled = true)
+	{
+		if(this.HTMLelement)
+		{
+			this.HTMLelement.disabled = !enabled;
+		}
+	}
+
 	createHTML() 
 	{
 		if (!this.HTMLelement)
 		{
-			this.HTMLelement = document.createElement('div');
+			this.HTMLelement = document.createElement(this.getHTMLElementType());
+			
 		}
-		if (this.id)
+		this.updateHTML();
+	}
+
+	updateHTML()
+	{
+		if (this.HTMLelement)
 		{
-			this.HTMLelement.id = this.id;
+			if (this.id)
+			{
+				this.HTMLelement.id = this.id;
+			}
+		}
+		else
+		{
+			throw "HTML not declared! use createHTML";
 		}
 	}
 
@@ -130,7 +159,7 @@ class Element {
 				}
 				else
 				{
-					throw "no id as argument nor parent for reference";
+					throw "no id as argument not parent for reference";
 				}
 			} 
 		}
@@ -271,15 +300,20 @@ class Orphanage
 		this.addElement(element);
 	}
 
-	generateIdFor()
+    generateIdFor()
+	{
+		return Orphanage.generateIdUnique(this.idPrefix);
+	}
+
+	static generateIdUnique(name="element")
 	{
 		let id=0;
 		do
 		{
 			id++;
 		}
-		while(document.getElementById("#" + this.idPrefix + id));
-		return "#" + this.idPrefix + id;
+		while(document.getElementById( name + id));
+		return name + id;
 	}
 
 	createHTML()
@@ -299,6 +333,11 @@ class Orphanage
 		this.setInHTML(element);
 	}
 
+	removeElement(element)
+	{
+		this.content.splice(element, 1);
+	}
+
 	getString()
 	{
 		return "[ content:" + this.content + "]";
@@ -314,7 +353,7 @@ class BlockOfElements extends Element
 	static createFromJSON(json, parent = null) {
 
 		//if it's a block of elements
-		if (json.type == "blockElements")
+		if (json.type == "BlockOfElements")
 		{
         	const parentBlock = new BlockOfElements(parent);
         	if(Array.isArray(json.content))
@@ -378,10 +417,15 @@ class BlockOfElements extends Element
 		{
 			this.content.splice(index, 1);
 		}
-
-		element.deleteHTML();
 	}
-	
+	deleteElement(element)
+	{
+		this.removeElement(element);
+		if(element)
+		{
+			element.deleteHTML();
+		}
+	}
 	getContentPrefixId()
 	{
 		return this.id + "_sub";
@@ -445,7 +489,7 @@ class ImageElement extends Element
 }
 class TextElement extends Element 
 {
-	constructor(parent, content) {
+	constructor(parent, content = "") {
 		super(parent, content, Element.TEXT_CATEGORY);
 	}
 
@@ -475,6 +519,18 @@ class TextElement extends Element
 
 	createHTML() {
 		super.createHTML();
+		this.setText(this.content);
+	}
+
+
+	setText(text = "")
+	{
+		this.setContent(text);
+	}
+	
+	setContent(text = "")
+	{
+		super.setContent(text);
 		this.HTMLelement.textContent = this.content;
 	}
 }
@@ -540,10 +596,10 @@ class BE_Heading extends BlockOfElements
 	}
 
 	//override
-	addElement(element)
-	{
-		super.addElement(element)
-	}
+	// addElement(element)
+	// {
+	// 	super.addElement(element)
+	// }
 }
 
 
@@ -586,6 +642,10 @@ class JSHTML_Builder
 			case "ClickShow":
 
 				element = ClickShow.createFromJSON(json,parent);
+				break;
+
+			case "WhatsAppContact":
+				element = WhatsAppContact.createFromJSON(json,parent);
 				break;
 
 			default:

@@ -1,0 +1,22 @@
+Mudanças
+
+20/04/24
+criação do metodo publico:
+Orphanage.generateIdUnique(name);
+e correção do generateIdFor() do Orphanage para um id limpo sem '#'
+(id = Orphanage.generateIdUnique(this.name);)
+
+adicionado em Element
+setContent(content);
+updateHTML();
+
+adcionado em BlockOfElements
+deleteElement();
+
+adição das classes:
+WhatsAppContact
+TextAreaElement
+InputElement
+InputTextElement
+InputButtonElement
+	
