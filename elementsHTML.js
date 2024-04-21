@@ -53,25 +53,25 @@ class InputButtonElement extends InputElement
 	static ELEMENT_TYPE = "ButtonText";
 
 
-
 	constructor(parent, value,enabled = true)
 	{
 		super(parent, value);
 		this.setEnabled(enabled);
+		this.activateOnClick();
 	}
 	//Override
 	updateHTML()
 	{
 		super.updateHTML();
 		this.HTMLelement.setAttribute('type','button');
-		this.HTMLelement.addEventListener('click', function() 
-		{
-            this.onclick();
-	    }.bind(this));
+		// this.HTMLelement.addEventListener('click', function() 
+		// {
+        //     this.onclick();
+	    // }.bind(this));
 	}
 
 	onclick()
 	{
-		return true;
+		return false;
 	}
 }

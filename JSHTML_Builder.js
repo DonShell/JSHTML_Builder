@@ -44,6 +44,36 @@ class Element {
 		return this.HTMLelement;
 	}
 
+	eventsUpdate()
+	{
+		if(this.onclickEnabled)
+		{
+			this.HTMLelement.addEventListener('click', function() 
+			{
+	            this.onclick();
+		    }.bind(this));
+		}
+	}
+
+	activateOnClick()
+	{
+		this.onclickEnabled = true;
+		this.eventsUpdate();
+
+	}
+
+	deactivateOnClick()
+	{
+		this.onclickEnabled = false;
+		this.eventsUpdate();
+	}
+
+	onclick()
+	{
+		//methodOnclick in here!
+
+	}
+
 	constructor(parent, content, category) 
 	{
 		this.setParent(parent);
@@ -128,6 +158,8 @@ class Element {
 		this.updateHTML();
 	}
 
+
+
 	updateHTML()
 	{
 		if (this.HTMLelement)
@@ -136,6 +168,7 @@ class Element {
 			{
 				this.HTMLelement.id = this.id;
 			}
+			this.eventsUpdate();
 		}
 		else
 		{
@@ -624,6 +657,26 @@ class JSHTML_Builder
 				element = ImageElement.createFromJSON(json,parent);
 				break;
 
+			case "InputElement":
+
+				element = TextAreaElement.createFromJSON(json,parent);
+				break;
+
+			case "InputTextElement":
+
+				element = TextAreaElement.createFromJSON(json,parent);
+				break;
+
+			case "InputButtonElement":
+
+				element = TextAreaElement.createFromJSON(json,parent);
+				break;
+
+			case "TextAreaElement":
+
+				element = TextAreaElement.createFromJSON(json,parent);
+				break;
+
 			case "BlockOfElements":
 				
 				element = BlockOfElements.createFromJSON(json,parent);
@@ -645,12 +698,19 @@ class JSHTML_Builder
 				break;
 
 			case "WhatsAppContact":
+
 				element = WhatsAppContact.createFromJSON(json,parent);
 				break;
 
+			case "InstagramContact":
+
+				element = InstagramContact.createFromJSON(json,parent);
+				break;
+
 			default:
-			console.log("Unknown JSON element type:", json);
-			//throw "Unknown Json element type!"
+
+				console.log("Unknown JSON element type:", json);
+				//throw "Unknown Json element type!"
 		}
 		if(element)
 		{

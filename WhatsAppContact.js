@@ -26,12 +26,13 @@ class WhatsAppContact extends BE_Heading
         		number, 
         		messageBox
         	);
-
-      		ElementBlockParent.enabledWhatsAppIcon(whatsAppIconEnabled);
-      		ElementBlockParent.setWhatsAppLinkIcon(setWhatsAppLinkIcon)
-      		ElementBlockParent.setDefaultMessage(message);
-      		ElementBlockParent.setEnabled(whatsAppIconEnabled);
-
+        	if(Array.isArray(json.content))
+	        {
+	        	json.content.forEach(item => {
+	                const content = JSHTML_Builder.importJson(item, ElementBlockParent);
+	                ElementBlockParent.addElement(content);
+	       		});
+	        }
             return ElementBlockParent;
 		}
 		else
@@ -300,6 +301,7 @@ class PhoneNumber
 	    } else if (number.length === 13) {
 	        return `+${number.substr(0, 2)} (${number.substr(2, 2)}) ${number.substr(4, 5)}-${number.substr(9, 4)}`;
 	    } else {
+	    	//return number;
 	        throw "error to formatateToText(): " + number + " ( parameter 'number') is > 13 or < 10!";
 	    }
 	}
