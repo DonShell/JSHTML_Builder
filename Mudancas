@@ -1,22 +1,14 @@
-Mudanças
+adicionada classe:
+CardItem
+ListCards
+CardModel1 extends CardItem
 
-20/04/24
-criação do metodo publico:
-Orphanage.generateIdUnique(name);
-e correção do generateIdFor() do Orphanage para um id limpo sem '#'
-(id = Orphanage.generateIdUnique(this.name);)
+adcionado metodo em Elements:
+addClasses(classList)
 
-adicionado em Element
-setContent(content);
-updateHTML();
+editadosos metodos da classe BE_Heading:
+getContentPrefixId()
+setIdFor(element)
 
-adcionado em BlockOfElements
-deleteElement();
 
-adição das classes:
-WhatsAppContact
-TextAreaElement
-InputElement
-InputTextElement
-InputButtonElement
-	
+

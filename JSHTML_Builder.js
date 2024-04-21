@@ -92,7 +92,14 @@ class Element {
     {
 		if(json.classElement)
 		{
-			this.addClass(json.classElement);
+			if(Array.isArray(json.classElement))
+			{
+				this.addClasses(json.classElement);
+			}
+			else
+			{
+				this.addClass(json.classElement);
+			}
 		}
 		if(json.id)
 		{
@@ -277,6 +284,13 @@ class Element {
 		this.makeVisible(false);
 	}
 
+	addClasses(classList)
+	{
+		for(i=0; i < classList.length ;i++)
+		{
+			this.addClass(classList[i]);
+		}
+	}
 
 	addClass(className)
 	{
@@ -572,7 +586,7 @@ class TextElement extends Element
 class BE_Heading extends BlockOfElements
 { 
 	//override
-	constructor(pai, title) 
+	constructor(pai, title = "") 
 	{
 		super(pai);
 		this.setHeading(title);
@@ -580,7 +594,9 @@ class BE_Heading extends BlockOfElements
 	static createFromJSON(json, parent = null) {
 
 	    //if it's a block of elements
-	    if ((json.type == "BE_Heading") && json.title) {
+	    if ((json.type == "BE_Heading")) {
+
+	    	const title = json.title ? json.title : "";
 	        
 	        const parentBlock = new BE_Heading(
 	            parent, 
@@ -610,21 +626,36 @@ class BE_Heading extends BlockOfElements
 	    }
 	    this.title = this.content[0];
 	    this.addElement(this.title);
-	    if (!this.id) {
-	    	this.title.setId("title");
-	    }
-	    else
-	    {
-	    	this.title.setId(this.id + "_title");
-	    }
+		this.title.addClass(
+		   	this.generateIdFor(this.title)
+		);
+
+		
 	    this.title.makeVisible(true);
 	}
+
+	//override
+	getContentPrefixId()
+	{
+		if(!this.id)
+		{
+			return this.constructor.name;
+		}
+		else
+		{
+			return this.id;
+		}
+	}
+
 	//override
 	generateIdFor(element) {
-	    if (element !== this.title) {
+	    if (element !== this.title) 
+	    {
 	        return super.generateIdFor(element);
-	    } else {
-	        return this.getContentPrefixId() + "title";
+	    } 
+	    else 
+	    {
+		    return this.getContentPrefixId() + "_title";
 	    }
 	}
 
@@ -705,6 +736,21 @@ class JSHTML_Builder
 			case "InstagramContact":
 
 				element = InstagramContact.createFromJSON(json,parent);
+				break;
+
+			case "CardItem":
+
+				element = CardItem.createFromJSON(json,parent);
+				break;
+
+			case "ListCards":
+
+				element = ListCards.createFromJSON(json,parent);
+				break;
+
+			case "CardModel1":
+
+				element = CardModel1.createFromJSON(json,parent);
 				break;
 
 			default:
