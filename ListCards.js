@@ -1,16 +1,27 @@
-class ListCards extends BE_Heading
+class ListCards extends HeaderAndElements
 {
 	static DEFAULT_CLASS_CARD = "cardItem";
 
 
 	static createFromJSON(json, parent = null,classCreator = ListCards) {
 
+		/*
+		json.title = json.title ? json.title : "catalogo:";
+	    var parentBlock = super.createFromJSON(json, parent,classCreator);
+
+        if(json.classOfCards && parentBlock)
+        {
+        	parentBlock.setCardClass(json.classOfCards);
+        }
+
+        return parentBlock;
+        */
 	    //if it's a block of elements
 	    if ((json.type == classCreator.name)) {
 
-	    	const title = json.title ? json.title : "Itens:";
+	    	const title = json.title ? json.title : "Catalogy:";
 	        
-	        const parentBlock = new ListCards(
+	        const parentBlock = new classCreator(
 	            parent, 
 	            title,
 	        );
@@ -28,12 +39,11 @@ class ListCards extends BE_Heading
 	       		});
 	        }
 
-
 	        return parentBlock;
 	    } 
 	    else 
 	    {
-	    	console.log("Error: to BE_Heading, use json.type = 'ListCards'");
+	    	console.log("Error: to ListCards, use json.type = 'ListCards'");
 			return null;
 	    }
 	}

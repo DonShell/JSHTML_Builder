@@ -64,9 +64,9 @@ class HeaderAndElements extends Element
 	}
 	
 
-	constructor(parent, title = null) 
+	constructor(parent, title = null,classCreator = HeaderAndElements.name) 
 	{
-		super(parent, null);
+		super(parent, null,classCreator);
 		this.setHeading(title);
 	}
 	static createFromJSON(json, parent = null, classCreator = HeaderAndElements) {
