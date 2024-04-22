@@ -1,14 +1,10 @@
-adicionada classe:
-CardItem
-ListCards
-CardModel1 extends CardItem
+implementado novo metodos em Element
+static generateIdName 
+setClassId
 
-adcionado metodo em Elements:
-addClasses(classList)
+Adicionada a classe
+HeaderAndElements
 
-editadosos metodos da classe BE_Heading:
-getContentPrefixId()
-setIdFor(element)
-
-
-
+proximo passo?
+ converter o listcard de BE_Heading para HeaderAndElements
+ verificar erro do generateIdName e tentar gerar um id unico ao invez do erro

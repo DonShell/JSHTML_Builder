@@ -74,7 +74,7 @@ class Element {
 
 	}
 
-	constructor(parent, content, category) 
+	constructor(parent, content, category = null) 
 	{
 		this.setParent(parent);
 		this.content = content;
@@ -159,8 +159,7 @@ class Element {
 	{
 		if (!this.HTMLelement)
 		{
-			this.HTMLelement = document.createElement(this.getHTMLElementType());
-			
+			this.HTMLelement = document.createElement(this.getHTMLElementType());	
 		}
 		this.updateHTML();
 	}
@@ -193,30 +192,66 @@ class Element {
 		{
 			if (!this.id)
 			{
-				if(this.parent.generateIdFor)
-				{
-					this.id = this.parent.generateIdFor(this);
-				}
-				else
-				{
-					throw "no id as argument not parent for reference";
-				}
-			} 
-		}
-		else 
-		{
-			this.id = id;
-		}
+				this.id = Element.generateIdName(this);
+			}
+			else 
+			{
+				this.id = id;
+			}
 
-		if (this.HTMLelement)
-		{
-			this.HTMLelement.id = this.id;
-		}
-		else
-		{
-			throw new Error("element's html not defined");
+			if (this.HTMLelement)
+			{
+				this.HTMLelement.id = this.id;
+			}
+			else
+			{
+				throw new Error("element's html not defined");
+			}
 		}
 	}
+	setClassId(id) 
+	{
+		if(this.idClass)
+		{
+			this.removeClass(this.idClass);
+		}
+
+		if (id === undefined) 
+		{
+			if (!this.id)
+			{
+				this.classId = Element.generateIdName(this);
+			}
+			else 
+			{
+				this.classId = id;
+			}
+		}
+
+		if(this.classId)
+		{
+			this.addClass(this.idClass);
+		}
+
+
+	}
+
+	static generateIdName(element) 
+	{
+		if (!element.id)
+		{
+			if(element.parent.generateIdFor)
+			{
+				element.id = element.parent.generateIdFor(element);
+			}
+			else
+			{
+				throw "no id as argument not parent for reference";
+			}
+		} 
+		
+	}
+
 
 	setThisInHTML(visible = true) 
 	{
@@ -406,7 +441,7 @@ class BlockOfElements extends Element
         	if(Array.isArray(json.content))
         	{
 	        	json.content.forEach(item => {
-	            	const content = BlockOfElements.createFromJSON(item,parentBlock);
+	            	const content = JSHTML_Builder.importJson(item,parentBlock);
 	            	parentBlock.addElement(content);
 	            });
         	}
@@ -586,9 +621,9 @@ class TextElement extends Element
 class BE_Heading extends BlockOfElements
 { 
 	//override
-	constructor(pai, title = "") 
+	constructor(parent, title = "") 
 	{
-		super(pai);
+		super(parent);
 		this.setHeading(title);
 	}
 	static createFromJSON(json, parent = null) {
@@ -716,6 +751,11 @@ class JSHTML_Builder
 			case "BE_Heading":
 
 				element = BE_Heading.createFromJSON(json,parent);
+				break;
+
+			case "HeaderAndElements":
+
+				element = HeaderAndElements.createFromJSON(json,parent);
 				break;
 
 			case "ListSelect":
