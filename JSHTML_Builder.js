@@ -186,54 +186,63 @@ class Element {
 	{
 		return this.id;
 	}
-	setId(id) 
-	{
-		if (id === undefined) 
-		{
-			if (!this.id)
-			{
-				this.id = Element.generateIdName(this);
-			}
-			else 
-			{
-				this.id = id;
-			}
 
-			if (this.HTMLelement)
-			{
-				this.HTMLelement.id = this.id;
-			}
-			else
-			{
-				throw new Error("element's html not defined");
-			}
+	unsetId()
+	{
+		this.id = null
+		if (this.HTMLelement)
+		{
+			this.HTMLelement.id = this.id;
 		}
 	}
-	setClassId(id) 
+	unsetClassId()
+	{
+
+		this.classId = null;
+		if(this.idClass)
+		{
+			this.removeClass(this.idClass);
+		}
+	}
+	
+	setId(id = Element.generateIdName(this)) 
+	{
+		
+		this.id = id
+		
+
+		if (this.HTMLelement)
+		{
+			this.HTMLelement.id = this.id;
+		}
+		else
+		{
+			throw new Error("element's html not defined");
+		}
+	
+	}
+	setClassId(id = Element.generateIdName(this)) 
 	{
 		if(this.idClass)
 		{
 			this.removeClass(this.idClass);
 		}
 
-		if (id === undefined) 
-		{
-			if (!this.id)
-			{
-				this.classId = Element.generateIdName(this);
-			}
-			else 
-			{
-				this.classId = id;
-			}
-		}
-
+		this.classId = id;
+		
 		if(this.classId)
 		{
 			this.addClass(this.idClass);
 		}
+	}
 
-
+	generateId()
+	{
+		this.setId(Element.generateIdName(this));
+	}
+	generateClassId()
+	{
+		this.setClassId(Element.generateIdName(this));
 	}
 
 	static generateIdName(element) 
@@ -242,11 +251,12 @@ class Element {
 		{
 			if(element.parent.generateIdFor)
 			{
-				element.id = element.parent.generateIdFor(element);
+				return element.parent.generateIdFor(element);
 			}
 			else
 			{
-				throw "no id as argument not parent for reference";
+				return Orphanage.generateIdUnique(element.constructor.name);
+				//throw "no id as argument not parent for reference";
 			}
 		} 
 		
