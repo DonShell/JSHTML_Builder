@@ -6,7 +6,7 @@ class ListCards extends HeaderAndElements
 	static createFromJSON(json, parent = null,classCreator = ListCards) {
 
 		/*
-		json.title = json.title ? json.title : "catalogo:";
+		json.title = json.title ? json.title : "Catalogy:";
 	    var parentBlock = super.createFromJSON(json, parent,classCreator);
 
         if(json.classOfCards && parentBlock)
@@ -29,6 +29,10 @@ class ListCards extends HeaderAndElements
 	        if(json.classOfCards)
 	        {
 	        	parentBlock.setCardClass(json.classOfCards);
+	        }  
+	        if(json.idContent)
+	        {
+	        	parentBlock.content.setId(json.idContent);
 	        }
 
 	        if(Array.isArray(json.content))
