@@ -47,7 +47,6 @@ class HeaderAndElements extends Element
 			this.content = new BlockOfElements(this);
 			this.elements = this.content;
 			this.HTMLelement.appendChild(this.content.getHTMLElement());
-
 		}
 	}
 	addElement(element)
@@ -74,11 +73,13 @@ class HeaderAndElements extends Element
 	    //if it's a block of elements
 	    if ((json.type == classCreator.name)) {
 
-	    	const title = json.title ? json.title : "";
+	    	json.title = json.title ? json.title : "";
+
+	    	const title = JSHTML_Builder.importJson(json.title, null);
 	        
 	        const parentBlock = new classCreator(
 	            parent, 
-	            json.title,
+	           	title,
 	        );
 	        if(Array.isArray(json.content))
 	        {
@@ -95,7 +96,8 @@ class HeaderAndElements extends Element
 			return null;
 	    }
 	}
-		//override
+	
+	//override
 	getContentPrefixId()
 	{
 		if(!this.id)
@@ -107,19 +109,6 @@ class HeaderAndElements extends Element
 			return this.id;
 		}
 	}
-
-	//override
-	generateIdFor(element) {
-	    if (element !== this.title) 
-	    {
-	        return super.generateIdFor(element);
-	    } 
-	    else 
-	    {
-		    return this.getContentPrefixId() + "_title";
-	    }
-	}
-
 
 	//override
 	getContentPrefixId()
@@ -146,4 +135,28 @@ class HeaderAndElements extends Element
 	    }
 	}
 
+
+	getElementClassDefault()
+	{
+		if(this.content)
+		{
+			return this.content.setElementClassDefault();
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	setElementClassDefault(className)
+	{
+		if(this.content)
+		{
+			this.content.setElementClassDefault(className);
+		}
+		else
+		{
+			throw "HTML not declared, class css not seted!";
+		}
+	}
 }

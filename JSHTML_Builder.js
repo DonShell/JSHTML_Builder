@@ -204,7 +204,7 @@ class Element {
 			this.removeClass(this.idClass);
 		}
 	}
-	
+
 	setId(id = Element.generateIdName(this)) 
 	{
 		
@@ -230,10 +230,8 @@ class Element {
 
 		this.classId = id;
 		
-		if(this.classId)
-		{
-			this.addClass(this.idClass);
-		}
+		this.addClass(this.idClass);
+		
 	}
 
 	generateId()
@@ -249,7 +247,7 @@ class Element {
 	{
 		if (!element.id)
 		{
-			if(element.parent.generateIdFor)
+			if(element.parent && element.parent.generateIdFor)
 			{
 				return element.parent.generateIdFor(element);
 			}
@@ -339,7 +337,10 @@ class Element {
 
 	addClass(className)
 	{
-    	this.getHTMLElement().classList.add(className);
+		if(className)
+		{
+    		this.getHTMLElement().classList.add(className);
+		}
 	}
 
 	removeClass(className)
@@ -489,6 +490,17 @@ class BlockOfElements extends Element
 		{
 			this.HTMLelement.appendChild(element.getHTMLElement());
 		}
+		element.addClass(this.getElementClassDefault());
+	}
+
+
+	setElementClassDefault(className)
+	{
+		this.elementClassDefault = className;
+	}
+	getElementClassDefault()
+	{
+		return this.elementClassDefault;
 	}
 
 	elementIsLinked(element) 
@@ -647,6 +659,11 @@ class BE_Heading extends BlockOfElements
 	            parent, 
 	            json.title,
 	        );
+	        
+        	if(json.classItemDefault)
+        	{
+        		parentBlock.setClassItemDefault(json.classItemDefault);
+        	}
 	        if(Array.isArray(json.content))
 	        {
 	        	json.content.forEach(item => {
@@ -704,11 +721,25 @@ class BE_Heading extends BlockOfElements
 	    }
 	}
 
+	setClassItemDefault(className)
+	{
+		this.classItemDefault = className;
+	}
+	getClassItemDefault()
+	{
+		return this.classItemDefault;
+	}
+
 	//override
-	// addElement(element)
-	// {
-	// 	super.addElement(element)
-	// }
+	addElement(element)
+	{
+	 	super.addElement(element);
+	 	if(element != this.title)
+		{
+			element.addClass(this.getClassItemDefault());
+		}
+
+	}
 }
 
 

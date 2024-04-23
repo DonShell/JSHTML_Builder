@@ -19,22 +19,28 @@ class ClickShow extends BE_Heading
 		//se for um bloco de elementos
 		if ((json.type == "ClickShow") && json.title)
 		{
-      		const ElementBlockParent = new ClickShow(
+      		const elementBlockParent = new ClickShow(
         		parent, 
         		json.title,
         		Boolean(json.contentVisible)
         	);
+
+        	if(json.classItemDefault)
+        	{
+        		elementBlockParent.setClassItemDefault(json.classItemDefault);
+        	}
+
         	if(Array.isArray(json.content))
         	{
 	        	json.content.forEach(
 	        		item => 
 	        		{
-		        		const content = JSHTML_Builder.importJson(item,ElementBlockParent);
-		            	ElementBlockParent.addElement(content);
+		        		const content = JSHTML_Builder.importJson(item,elementBlockParent);
+		            	elementBlockParent.addElement(content);
 	   				}
 	   			);
 	        }
-            return ElementBlockParent;
+            return elementBlockParent;
 		}
 		else
 		{
@@ -66,6 +72,9 @@ class ClickShow extends BE_Heading
 	        }.bind(this));
 	    }
 	}
+
+
+
 
 	toggleVisibleContent()
 	{
