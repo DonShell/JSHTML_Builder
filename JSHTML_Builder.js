@@ -234,6 +234,8 @@ class Element {
 		
 	}
 
+
+
 	generateId()
 	{
 		this.setId(Element.generateIdName(this));
@@ -329,7 +331,7 @@ class Element {
 
 	addClasses(classList)
 	{
-		for(i=0; i < classList.length ;i++)
+		for( let i = 0; i < classList.length ;i++)
 		{
 			this.addClass(classList[i]);
 		}
@@ -339,7 +341,15 @@ class Element {
 	{
 		if(className)
 		{
-    		this.getHTMLElement().classList.add(className);
+			if(Array.isArray(className))
+			{
+				this.addClasses(className);
+			}
+			else
+			{
+
+    			this.getHTMLElement().classList.add(className);
+			}
 		}
 	}
 
@@ -449,6 +459,13 @@ class BlockOfElements extends Element
 		if (json.type == "BlockOfElements")
 		{
         	const parentBlock = new BlockOfElements(parent);
+
+        	if(parent)
+        	{
+        		console.log("BlockOfElements criado com pai:" + parent);
+        		parentBlock.addElementClassDefault(parent.getElementClassDefault());
+        	}
+
         	if(Array.isArray(json.content))
         	{
 	        	json.content.forEach(item => {
@@ -493,11 +510,73 @@ class BlockOfElements extends Element
 		element.addClass(this.getElementClassDefault());
 	}
 
+	addElementClassesDefault(classesArray)
+	{
+		for (var i = 0; i < classesArray.length; i++) {
+			this.addElementClassDefault(classesArray[i]);
+		}
+	}
+
+	addElementClassDefault(className)
+	{
+		if(Array.isArray(className))
+		{
+			this.addElementClassesDefault(className);
+		}
+		else
+		{
+			if(!this.elementClassDefault)
+			{
+				this.setElementClassDefault([]);
+			}
+			else if(typeof this.elementClassDefault == 'String')
+			{
+				const temp = this.elementClassDefault;
+				this.setElementClassDefault([]);
+				this.elementClassDefault[0] = temp;
+			}
+			this.elementClassDefault[this.elementClassDefault.length] = className;
+			this.addClassInAllElements(className);
+		}
+	}
+
+
+	addClassInAllElements(className)
+	{
+		if(this.content)
+		{
+			for (let i = 0; i < this.content.length; i++) {
+
+				this.content[i].addClass(className);
+			}
+		}
+	}
+	removeClassInAllElements(className)
+	{
+		if(this.content)
+		{
+			for (let i = 0; i < this.content.length; i++) {
+				this.content[i].removeClass(className);
+			}
+		}
+	}
+	removeElementClassDefault(className)
+	{
+		const index = this.elementClassDefault.indexOf(className);
+
+		if (index !== -1) 
+		{
+			this.elementClassDefault.splice(index, 1);
+		}
+	}
 
 	setElementClassDefault(className)
 	{
 		this.elementClassDefault = className;
 	}
+
+
+
 	getElementClassDefault()
 	{
 		return this.elementClassDefault;
@@ -583,7 +662,14 @@ class ImageElement extends Element
 	createHTML() 
 	{
 		super.createHTML();
-		this.HTMLelement.style.backgroundImage = "url('" + this.content + "')";
+		this.setImage;
+	}
+	setImage()
+	{
+		if(this.HTMLelement && this.content)
+		{
+			this.HTMLelement.style.backgroundImage = "url('" + this.content + "')";
+		}
 	}
 
 	getString()
@@ -834,6 +920,17 @@ class JSHTML_Builder
 				element = CardModel1.createFromJSON(json,parent);
 				break;
 
+
+
+		///////personalClass
+			case "ExtintorBox":
+
+				element = ExtintorBox.createFromJSON(json,parent);
+				break;
+			case "ExtintoresBoxArsenal":
+
+				element = ExtintoresBoxArsenal.createFromJSON(json,parent);
+				break;
 			default:
 
 				console.log("Unknown JSON element type:", json);

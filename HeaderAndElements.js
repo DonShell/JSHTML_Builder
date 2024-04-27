@@ -27,13 +27,18 @@ class HeaderAndElements extends Element
 				this.header = header;
 			}
 			this.header.setParent(this);
-			this.header.setClassId();
+			//this.header.setClassId();
 			const newHtml = this.header.getHTMLElement().outerHTML;
 			this.HTMLelement.innerHTML = newHtml;
 
 			this.HTMLelement.appendChild(this.content.getHTMLElement());
 
-	  		this.header.makeVisible(true);
+	  		//this.header.makeVisible(true);
+			if(this.id)
+			{
+				this.header.setId(this.id + "_title");
+			}
+
 		}
 
 		
@@ -47,6 +52,10 @@ class HeaderAndElements extends Element
 			this.content = new BlockOfElements(this);
 			this.elements = this.content;
 			this.HTMLelement.appendChild(this.content.getHTMLElement());
+			if(this.id)
+			{
+				this.content.setId(this.id + "_box");
+			}
 		}
 	}
 	addElement(element)
@@ -62,6 +71,23 @@ class HeaderAndElements extends Element
 		this.content.removeElement(element);
 	}
 	
+	//override
+	setId(id)
+	{
+		super.setId(id);
+		if(this.id)
+		{
+			if(this.header)
+			{
+				this.header.setId(this.id + "_header");
+			}
+			if(this.content)
+			{
+				this.content.setId(this.id + "_box");
+			}
+		}
+
+	}
 
 	constructor(parent, title = null,classCreator = HeaderAndElements.name) 
 	{
@@ -81,10 +107,17 @@ class HeaderAndElements extends Element
 	            parent, 
 	           	title,
 	        );
+
+	        if(json.elementClassDefault)
+        	{
+        		parentBlock.addElementClassDefault(json.elementClassDefault);
+        	}
+
+
 	        if(Array.isArray(json.content))
 	        {
 	        	json.content.forEach(item => {
-	                const content = JSHTML_Builder.importJson(item, parentBlock);
+	                const content = JSHTML_Builder.importJson(item, parentBlock.content);
 	                parentBlock.addElement(content);
 	       		});
 	        }
@@ -135,12 +168,25 @@ class HeaderAndElements extends Element
 	    }
 	}
 
+	addElementClassDefault(className)
+	{
+		this.content.addElementClassDefault(className);
+	}
+	addElementClassesDefault(className)
+	{
+		this.content.addElementClassesDefault(className);
+	}
+	removeElementClassDefault(className)
+	{
+		this.content.removeElementClassDefault(className);
+	}
+
 
 	getElementClassDefault()
 	{
 		if(this.content)
 		{
-			return this.content.setElementClassDefault();
+			return this.content.getElementClassDefault();
 		}
 		else
 		{
