@@ -52,13 +52,30 @@ class InputButtonElement extends InputElement
 {
 	static ELEMENT_TYPE = "ButtonText";
 
+	static createFromJSON(json, parent = null) {
 
+		//if it's a block of elements
+		if (json.type == "InputButtonElement")
+		{
+
+			const parentBlock = new InputButtonElement(parent,json.content);
+			return parentBlock;
+		}
+		else
+		{ 
+			console.log("Error: to InputButtonElement use json.type = 'InputButtonElement'");
+			return null;
+		}
+
+	}
+	
 	constructor(parent, value,enabled = true)
 	{
 		super(parent, value);
 		this.setEnabled(enabled);
 		this.activateOnClick();
 	}
+
 	//Override
 	updateHTML()
 	{
@@ -73,5 +90,48 @@ class InputButtonElement extends InputElement
 	onclick()
 	{
 		return false;
+	}
+}
+class IframeElement extends Element
+{
+
+	static HTML_ELEMENT_TYPE = "iframe";
+
+
+	getHTMLElementType()
+	{
+		return IframeElement.HTML_ELEMENT_TYPE;
+	}
+	
+	static createFromJSON(json, parent = null) {
+
+		//if it's a block of elements
+		if ((json.type == "IframeElement")) {
+
+			const parentBlock = new IframeElement(
+				parent, 
+				json.url,
+			);
+			
+			return parentBlock;
+		} 
+		else 
+		{
+			console.log("Error: to IframeElement, use json.type = 'IframeElement'");
+			return null;
+		}
+	}
+
+
+	constructor(parent,url)
+	{
+		super(parent,url);
+		this.url = url;
+		this.setIframe(this.url);
+	}
+	setIframe(url)
+	{
+		this.HTMLelement.setAttribute("frameborder","0");
+		this.HTMLelement.setAttribute("src",url);
 	}
 }

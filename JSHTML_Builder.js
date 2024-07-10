@@ -11,6 +11,8 @@ class Element {
 	
 	static HTML_ELEMENT_TYPE = 'div';
 
+
+
 	getHTMLElementType()
 	{
 		return Element.HTML_ELEMENT_TYPE;
@@ -46,29 +48,73 @@ class Element {
 
 	eventsUpdate()
 	{
-		if(this.onclickEnabled)
+		if(this.onClickEnabled)
 		{
-			this.HTMLelement.addEventListener('click', function() 
+			if(this.getArgumentOnClick())
 			{
-	            this.onclick();
-		    }.bind(this));
+				this.HTMLelement.addEventListener('click', function() 
+				{
+					
+					this.onClick(this.getArgumentOnClick());
+				}.bind(this));	
+			}
+			else
+			{	
+				this.HTMLelement.addEventListener('click', function() 
+				{
+					this.onClick();
+				}.bind(this));
+			}
+		}
+		// else
+		// {
+		// 	console.log("remove click event not tested, revise this code!");
+		// 	this.HTMLelement.removeEventListener('click');
+		// }
+	}
+
+	getValue()
+	{
+		return this.content;
+	}
+
+	getArgumentOnClick()
+	{
+		return this.argumentOnClick;
+	}
+	setArgumentOnClick(args)
+	{
+		this.argumentOnClick = args; 
+	}
+
+	setOnClick(method,enabled = true)
+	{
+		this.onClick = method;
+
+		if(enabled)
+		{
+			this.activateOnClick();
+		}
+		else	
+		{
+			this.deactivateOnClick();
 		}
 	}
 
 	activateOnClick()
 	{
-		this.onclickEnabled = true;
+		this.onClickEnabled = true;
 		this.eventsUpdate();
 
 	}
 
 	deactivateOnClick()
 	{
-		this.onclickEnabled = false;
+		this.onClickEnabled = false;
 		this.eventsUpdate();
 	}
 
-	onclick()
+	onClick(args = this.argumentOnClick)
 	{
 		//methodOnclick in here!
 
@@ -86,10 +132,10 @@ class Element {
 	static createFromJSON(json, parent) {
    		//throw "error: createFromJSON root function not declared";
    		return JSHTML_Builder.importJson(json, parent);
-    }
+	}
 
-    importAtributesFromJSON(json)
-    {
+	importAtributesFromJSON(json)
+	{
 		if(json.classElement)
 		{
 			if(Array.isArray(json.classElement))
@@ -112,39 +158,39 @@ class Element {
 			 	this.setVariable(key,json.otherVariables[key],json.forceOtherVariables);
 			});
 		}
-    }
+	}
 
-    setVariable(name,value,force = false)
-    {
-    	if (!this.isUniqueVariableName(name)) 
-    	{
-    		if(force)
-    		{
+	setVariable(name,value,force = false)
+	{
+		if (!this.isUniqueVariableName(name)) 
+		{
+			if(force)
+			{
 				setVariable(name + "_",value,force);
-    		}
-            else
-            {
-            	console.error(`Variable name "${name}" is not unique.`);
-            }
-        }
-        else
-        {
-	    	this[name] = value;
+			}
+			else
+			{
+				console.error(`Variable name "${name}" is not unique.`);
+			}
+		}
+		else
+		{
+			this[name] = value;
 	 	}
-    }
+	}
 
-    isUniqueVariableName(name)
-    {
-    	return !(Object.getOwnPropertyNames(this.constructor.prototype).includes(name))
-    }
+	isUniqueVariableName(name)
+	{
+		return !(Object.getOwnPropertyNames(this.constructor.prototype).includes(name))
+	}
 
 	setParent(parent)
 	{
 
-		if(parent && parent.generateIdFor && parent.setThisInHTML)
-		{
+		//if(parent && parent.generateIdFor && parent.setThisInHTML)
+		//{
 			this.parent = parent;
-		}
+		//}
 	}
 
 	setEnabled(enabled = true)
@@ -208,16 +254,14 @@ class Element {
 	setId(id = Element.generateIdName(this)) 
 	{
 		
-		this.id = id
-		
-
+		this.id = id;
 		if (this.HTMLelement)
 		{
 			this.HTMLelement.id = this.id;
 		}
 		else
 		{
-			throw new Error("element's html not defined");
+			throw Error("element's html not defined");
 		}
 	
 	}
@@ -348,14 +392,14 @@ class Element {
 			else
 			{
 
-    			this.getHTMLElement().classList.add(className);
+				this.getHTMLElement().classList.add(className);
 			}
 		}
 	}
 
 	removeClass(className)
 	{
-    	this.getHTMLElement().classList.remove(className);
+		this.getHTMLElement().classList.remove(className);
 	}
 
 	makeVisible(choice) 
@@ -378,6 +422,40 @@ class Element {
 	getString()
 	{
 		return "{content: "+ content + "}";
+	}
+
+	static elementWorkJson(element,action,argument)
+	{
+    
+		if(action == "onClickFunction")
+		{
+			element.setOnClick(argument);
+		}
+		if(action == "argumentOnClick")
+		{
+			element.setArgumentOnClick(argument);
+		}
+		if(action == "elementClass")
+		{
+			element.addClass(argument);
+		}
+ 		if(action == "elementId")
+		{
+			element.addClass(argument);
+		}
+ 		if(action == "content")
+		{
+			element.setContent(argument);
+		}
+ 		if(action == "hide")
+		{
+			element.hide();
+		}
+ 		if(action == "show")
+		{
+			element.show();
+		}
+    	return element;
 	}
 }
 
@@ -403,7 +481,7 @@ class Orphanage
 		this.addElement(element);
 	}
 
-    generateIdFor()
+	generateIdFor()
 	{
 		return Orphanage.generateIdUnique(this.idPrefix);
 	}
@@ -458,31 +536,94 @@ class BlockOfElements extends Element
 		//if it's a block of elements
 		if (json.type == "BlockOfElements")
 		{
-        	const parentBlock = new BlockOfElements(parent);
+			const parentBlock = new BlockOfElements(parent);
 
-        	if(parent)
+			if(parent)
+			{
+				parentBlock.addElementClassDefault(parent.getElementClassDefault());
+			}
+
+        	if(json.triggeredContentRegistration)
         	{
-        		console.log("BlockOfElements criado com pai:" + parent);
-        		parentBlock.addElementClassDefault(parent.getElementClassDefault());
+	        	parentBlock.autoRegistryContentByJson(json.triggeredContentRegistration);
         	}
 
-        	if(Array.isArray(json.content))
-        	{
-	        	json.content.forEach(item => {
-	            	const content = JSHTML_Builder.importJson(item,parentBlock);
-	            	parentBlock.addElement(content);
-	            });
-        	}
-            return parentBlock;
+			if(Array.isArray(json.content))
+			{
+				json.content.forEach(item => {
+					const content = JSHTML_Builder.importJson(item,parentBlock);
+					parentBlock.addElement(content);
+				});
+			}
+			return parentBlock;
 		}
 		else
 		{ 
-	        console.log("Error: to BlockOfElements use json.type = 'BlockOfElements'");
+			console.log("Error: to BlockOfElements use json.type = 'BlockOfElements'");
 			return null;
 		}
 
-    }
-	
+	}
+	autoRegistryContentByJson(json)
+	{
+		//json
+		// *"definitions":[]
+		// *"structureContent":[]
+		// *"content":[]
+
+        if(Array.isArray(json.content))
+        {
+        	for( let y = 0; y < json.content.length; y++)
+        	{
+        		let contentListItem = json.content[y];
+        		  //find typeElement
+		        let indiceType = json.structureContent.indexOf("typeElement");
+				let type = json.structureContent[indiceType];
+				
+				if(!type)
+				{
+
+					for( let x = 0; x < json.definitions.length; x++)
+			        {
+			        	if(json.definitions[x].typeElement)
+						{
+							type = json.definitions[x].typeElement;
+						}
+			        }
+
+					if(!type)
+					{   
+						throw "unspecific typeElement in AutoRegistrer of " + this.constructor.name;
+					}
+				}
+
+				let element = eval("new "+type +"(null)");
+				element.setParent(this);
+
+				for( let x = 0; x < json.definitions.length; x++)
+		        {
+		        	this.elementWorkJson(element,json.definitions[x],contentListItem[x]);
+		        }
+
+		        for( let x = 0; x < contentListItem.length; x++)
+		        {
+		        	this.elementWorkJson(element,json.structureContent[x],contentListItem[x]);
+		        }
+            	this.addElement(element);
+       		}
+        }
+	}
+	elementWorkJson(element,action,argument)
+	{
+    	element = Element.elementWorkJson(element,action,argument);
+
+		if(action == "addContent")
+		{
+			let content = JSHTML_Builder.importJson(argument);
+			element.addElement(content);
+		}
+	    //return element; 
+	}
 	constructor(parent) 
 	{
 		super(parent, [], Element.BLOCK_CATEGORY);
@@ -658,17 +799,18 @@ class ImageElement extends Element
 			console.log("Error: to ImageElement use json.type = 'ImageElement'")
 			return null;
 		}
-    }
+	}
 	createHTML() 
 	{
 		super.createHTML();
-		this.setImage;
+		this.setImage( this.content);
 	}
-	setImage()
+	setImage(image)
 	{
-		if(this.HTMLelement && this.content)
+		if(this.HTMLelement && image)
 		{
-			this.HTMLelement.style.backgroundImage = "url('" + this.content + "')";
+			this.content = image;
+			this.HTMLelement.style.backgroundImage = "url('" + image + "')";
 		}
 	}
 
@@ -681,6 +823,11 @@ class TextElement extends Element
 {
 	constructor(parent, content = "") {
 		super(parent, content, Element.TEXT_CATEGORY);
+	}
+
+	getValue()
+	{
+		return this.getText();
 	}
 
 	//override
@@ -700,7 +847,7 @@ class TextElement extends Element
 			return null;
 		}
 	}
-    
+	
 
 	getString()
 	{
@@ -716,6 +863,11 @@ class TextElement extends Element
 	setText(text = "")
 	{
 		this.setContent(text);
+	}
+
+	getText()
+	{
+		return this.content;
 	}
 	
 	setContent(text = "")
@@ -736,50 +888,50 @@ class BE_Heading extends BlockOfElements
 	}
 	static createFromJSON(json, parent = null) {
 
-	    //if it's a block of elements
-	    if ((json.type == "BE_Heading")) {
+		//if it's a block of elements
+		if ((json.type == "BE_Heading")) {
 
-	    	const title = json.title ? json.title : "";
-	        
-	        const parentBlock = new BE_Heading(
-	            parent, 
-	            json.title,
-	        );
-	        
-        	if(json.classItemDefault)
-        	{
-        		parentBlock.setClassItemDefault(json.classItemDefault);
-        	}
-	        if(Array.isArray(json.content))
-	        {
-	        	json.content.forEach(item => {
-	                const content = JSHTML_Builder.importJson(item, parentBlock);
-	                parentBlock.addElement(content);
-	       		});
-	        }
-	        return parentBlock;
-	    } 
-	    else 
-	    {
-	    	console.log("Error: to BE_Heading, use json.type = 'BE_Heading'");
+			const title = json.title ? json.title : "";
+			
+			const parentBlock = new BE_Heading(
+				parent, 
+				json.title,
+			);
+			
+			if(json.classItemDefault)
+			{
+				parentBlock.setClassItemDefault(json.classItemDefault);
+			}
+			if(Array.isArray(json.content))
+			{
+				json.content.forEach(item => {
+					const content = JSHTML_Builder.importJson(item, parentBlock);
+					parentBlock.addElement(content);
+		   		});
+			}
+			return parentBlock;
+		} 
+		else 
+		{
+			console.log("Error: to BE_Heading, use json.type = 'BE_Heading'");
 			return null;
-	    }
+		}
 	}
 
 	setHeading(title) {
-	    if (typeof title === 'string') {
-	        this.content[0] = new TextElement(this, title);
-	    } else {
-	        this.content[0] = title;
-	    }
-	    this.title = this.content[0];
-	    this.addElement(this.title);
+		if (typeof title === 'string') {
+			this.content[0] = new TextElement(this, title);
+		} else {
+			this.content[0] = title;
+		}
+		this.title = this.content[0];
+		this.addElement(this.title);
 		this.title.addClass(
 		   	this.generateIdFor(this.title)
 		);
 
 		
-	    this.title.makeVisible(true);
+		this.title.makeVisible(true);
 	}
 
 	//override
@@ -797,14 +949,14 @@ class BE_Heading extends BlockOfElements
 
 	//override
 	generateIdFor(element) {
-	    if (element !== this.title) 
-	    {
-	        return super.generateIdFor(element);
-	    } 
-	    else 
-	    {
-		    return this.getContentPrefixId() + "_title";
-	    }
+		if (element !== this.title) 
+		{
+			return super.generateIdFor(element);
+		} 
+		else 
+		{
+			return this.getContentPrefixId() + "_title";
+		}
 	}
 
 	setClassItemDefault(className)
@@ -852,17 +1004,17 @@ class JSHTML_Builder
 
 			case "InputElement":
 
-				element = TextAreaElement.createFromJSON(json,parent);
+				element = InputElement.createFromJSON(json,parent);
 				break;
 
 			case "InputTextElement":
 
-				element = TextAreaElement.createFromJSON(json,parent);
+				element = InputTextElement.createFromJSON(json,parent);
 				break;
 
 			case "InputButtonElement":
 
-				element = TextAreaElement.createFromJSON(json,parent);
+				element = InputButtonElement.createFromJSON(json,parent);
 				break;
 
 			case "TextAreaElement":
@@ -920,6 +1072,10 @@ class JSHTML_Builder
 				element = CardModel1.createFromJSON(json,parent);
 				break;
 
+			case "IframeElement":
+
+				element = IframeElement.createFromJSON(json,parent);
+				break;
 
 
 		///////personalClass
@@ -931,6 +1087,10 @@ class JSHTML_Builder
 
 				element = ExtintoresBoxArsenal.createFromJSON(json,parent);
 				break;
+			case "OscillatingExtintorBox":
+				element = OscillatingExtintorBox.createFromJSON(json,parent);
+				break;
+				
 			default:
 
 				console.log("Unknown JSON element type:", json);
@@ -970,6 +1130,15 @@ class JSHTML_Builder
 			}
 			json.type = "ImageElement";
 		}
+		else if(json.iframe)
+		{
+			json.type =	"IframeElement";
+			if(!json.url)
+			{
+				json.url = json.iframe
+			}
+		}
+
 		return json;
 	}
 

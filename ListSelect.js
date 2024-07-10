@@ -14,7 +14,7 @@ class ListSelect extends BE_Heading {
 	        if(Array.isArray(json.content))
 	        {
 		        json.content.forEach(item => {
-		            const content = ListSelect.createFromJSON(item, parentBlock);
+		            const content = JSHTML_Builder.importJson(item, parentBlock);
 		            if(content)
 		            {
 		              	parentBlock.addElement(content);
@@ -26,7 +26,7 @@ class ListSelect extends BE_Heading {
 	    } 
 	    else
 	    {	
-	        console.log("Error: to ImageElement use json.type = 'ImageElement'");
+	        console.log("Error: to ListSelect use json.type = 'ListSelect'");
 			return null;
 	    }
 	}
@@ -93,6 +93,23 @@ class ListSelect extends BE_Heading {
         element.selected = true;
         this.selected = element;
         this.addClassOfElement(this.selected,"selected"); // Add class "selected" to element HTML
+    }
+    getSelected() 
+    {
+      return this.selected;
+    }
+    
+    getValue()
+    {
+ 		let element = this.getSelected();
+ 		if(element)
+ 		{
+    		return element.getValue();
+ 		}
+ 		else
+ 		{
+ 			return null;
+ 		}
     }
 
     unsetSelected(element) {

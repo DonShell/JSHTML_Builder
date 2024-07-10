@@ -15,6 +15,7 @@ class WhatsAppContact extends BE_Heading
 			const message = json.message ? json.message : null;
       		const messageBox = Boolean(json.messageBox);
       		const setWhatsAppLinkIcon = json.linkIcon ? json.linkIcon : null;
+      		const buttonName = json.buttonName ? json.buttonName : null;
       		var whatsAppIconEnabled = true;
       		if(typeof json.iconEnabled !== 'undefined')
       		{
@@ -32,6 +33,11 @@ class WhatsAppContact extends BE_Heading
 	                const content = JSHTML_Builder.importJson(item, ElementBlockParent);
 	                ElementBlockParent.addElement(content);
 	       		});
+	        }
+
+	        if(buttonName)
+	        {
+	        	ElementBlockParent.setButtonName(buttonName);
 	        }
             return ElementBlockParent;
 		}
@@ -65,6 +71,18 @@ class WhatsAppContact extends BE_Heading
 
 	}
 
+	setButtonName(name)
+	{
+		this.buttonName = name;
+		if(this.sendButton)
+		{
+			this.sendButton.setText(this.buttonName);
+		}
+	}
+	getButtonName()
+	{
+		return this.buttonName ? this.buttonName : "Open WhatsApp";
+	}
 
 	getWhatsAppLinkIcon()
 	{
@@ -115,9 +133,10 @@ class WhatsAppContact extends BE_Heading
 		{
 			if(!this.sendButton)
 			{
-				this.sendButton = new InputButtonElement(this,"enviar");
+				this.sendButton = new InputButtonElement(this,this.getButtonName());
 				this.addElement(this.sendButton);
-				this.sendButton.onclick = this.send.bind(this);
+				this.sendButton.setOnClick(this.send.bind(this));
+				ponte = this;
 			}
 		}
 		else
@@ -207,6 +226,7 @@ class WhatsAppContact extends BE_Heading
 		if(!this.phoneText)
 		{
 			this.phoneText = new TextElement(this,this.phoneNumber.getText());
+			this.phoneText.addClass("phoneNumber");
 			this.addElement(this.phoneText);
 		}
 		else
@@ -295,7 +315,7 @@ class PhoneNumber
 		if (number.length === 10) {
 	        return `+55 (${number.substr(0, 2)}) ${number.substr(2, 4)}-${number.substr(6, 4)}`;
 	    } else if (number.length === 11) {
-	        return `+55 (${number.substr(2, 2)}) ${number.substr(4, 5)}-${number.substr(9, 4)}`;
+	        return `+55 (${number.substr(0, 2)}) ${number.substr(2, 5)}-${number.substr(7, 4)}`;
 	    } else if (number.length === 12) {
 	        return `+${number.substr(0, 2)} (${number.substr(2, 2)}) ${number.substr(4, 4)}-${number.substr(8, 4)}`;
 	    } else if (number.length === 13) {

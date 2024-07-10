@@ -1,4 +1,4 @@
-class InstagramContact extends BE_Heading
+class InstagramContact extends HeaderAndElements
 {
 	static LINK_DEFAULT = "https://www.instagram.com/";
 
@@ -8,20 +8,23 @@ class InstagramContact extends BE_Heading
 			if (json.type == "InstagramContact")
 			{
 				const at = json.at ? json.at : null;
-
-	      		const ElementBlockParent = new InstagramContact(
+	      		const elementBlockParent = new InstagramContact(
 	      			parent,
 	      			at
 	        	);
+				if(json.title)
+				{
+					elementBlockParent.setHeading(JSHTML_Builder.importJson(json.title,elementBlockParent));
+				}
 	        	if(Array.isArray(json.content))
 		        {
 		        	json.content.forEach(item => {
-		                const content = JSHTML_Builder.importJson(item, ElementBlockParent);
-		                ElementBlockParent.addElement(content);
+		                const content = JSHTML_Builder.importJson(item, elementBlockParent);
+		                elementBlockParent.addElement(content);
 		       		});
 		        }
 
-	            return ElementBlockParent;
+	            return elementBlockParent;
 			}
 			else
 			{
@@ -31,12 +34,13 @@ class InstagramContact extends BE_Heading
 		}
 
 
-	constructor(parent,at)
+	constructor(parent,at,header="Instagram")
 	{
-		super(parent,"Instagram");
+		super(parent,header);
 		this.activateOnClick();
 		this.setAt(at);
-		this.atText = new TextElement(this, "@" + at)
+		this.atText = new TextElement(this, "@" + at );
+		this.atText.addClass("at");
 		this.addElement(this.atText);
 
 	}
@@ -60,3 +64,5 @@ class InstagramContact extends BE_Heading
 	}
 
 }
+//cssInstagram background: linear-gradient(341deg, rgba(255,240,3,1) 0%, rgba(255,82,31,1) 12%, rgba(255,58,33,1) 30%, rgba(246,37,168,1) 62%, rgba(238,15,124,1) 77%, rgba(174,23,190,1) 88%, rgba(0,31,255,1) 99%);
+

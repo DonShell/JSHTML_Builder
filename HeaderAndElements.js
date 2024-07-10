@@ -28,9 +28,8 @@ class HeaderAndElements extends Element
 			}
 			this.header.setParent(this);
 			//this.header.setClassId();
-			const newHtml = this.header.getHTMLElement().outerHTML;
-			this.HTMLelement.innerHTML = newHtml;
-
+			this.HTMLelement.innerHTML = "";
+			this.HTMLelement.appendChild(this.header.getHTMLElement());
 			this.HTMLelement.appendChild(this.content.getHTMLElement());
 
 	  		//this.header.makeVisible(true);
@@ -77,6 +76,7 @@ class HeaderAndElements extends Element
 		super.setId(id);
 		if(this.id)
 		{
+			this.header.setId(this.id + "_title");
 			if(this.header)
 			{
 				this.header.setId(this.id + "_header");
@@ -89,10 +89,10 @@ class HeaderAndElements extends Element
 
 	}
 
-	constructor(parent, title = null,classCreator = HeaderAndElements.name) 
+	constructor(parent, header = null,classCreator = HeaderAndElements.name) 
 	{
 		super(parent, null,classCreator);
-		this.setHeading(title);
+		this.setHeading(header);
 	}
 	static createFromJSON(json, parent = null, classCreator = HeaderAndElements) {
 
@@ -112,7 +112,10 @@ class HeaderAndElements extends Element
         	{
         		parentBlock.addElementClassDefault(json.elementClassDefault);
         	}
-
+        	if(json.triggeredContentRegistration)
+        	{
+	        	parentBlock.autoRegistryContentByJson(json.triggeredContentRegistration);
+        	}
 
 	        if(Array.isArray(json.content))
 	        {
@@ -181,6 +184,20 @@ class HeaderAndElements extends Element
 		this.content.removeElementClassDefault(className);
 	}
 
+
+	//Override
+	autoRegistryContentByJson(json)
+	{
+		if(this.content)
+		{
+			this.content.autoRegistryContentByJson(json);
+		}
+		else
+		{
+			throw "Error in autoRegisterContentJson: content of " + this.constructor.name + " not defined!";
+		}
+
+	}
 
 	getElementClassDefault()
 	{
