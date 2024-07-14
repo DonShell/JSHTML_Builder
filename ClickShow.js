@@ -3,11 +3,12 @@
 //BlocoDeElementos para com tratamento especial para title
 class ClickShow extends BE_Heading 
 {	
+	static PREDEFINITION_visibleContent = false;
 	//override
-	constructor(parent, title,clickToShow = true,visibleContent = false) 
+	constructor(parent, title,visibleContent = ClickShow.PREDEFINITION_visibleContent) 
 	{
 		super(parent, title);
-		this.clickToShow(clickToShow);
+		this.clickToShow(true);
 		this.makeVisibleContent(visibleContent);
 	}
 
@@ -16,33 +17,42 @@ class ClickShow extends BE_Heading
 	static createFromJSON(json, parent = null) {
 
 		//se for um bloco de elementos
-		if (json.ClickShow && Array.isArray(json.ClickShow.content) && json.ClickShow.title)
+		if ((json.type == "ClickShow") && json.title)
 		{
-      		const ElementBlockParent = new ClickShow(
+      		const elementBlockParent = new ClickShow(
         		parent, 
-        		json.ClickShow.title,
-        		Boolean(json.ClickShow.clickToShowEnabled),
-        		Boolean(json.ClickShow.contentVisible)
+        		json.title,
+        		Boolean(json.contentVisible)
         	);
-        	json.ClickShow.content.forEach(
-        		item => 
-        		{
-	        		const content = ClickShow.criarAPartirDeJSON(item,ElementBlockParent);
-	            	ElementBlockParent.adicionarElemento(content);
-   				}
-   			);
-            return ElementBlockParent;
+
+        	if(json.classItemDefault)
+        	{
+        		elementBlockParent.setClassItemDefault(json.classItemDefault);
+        	}
+
+        	if(Array.isArray(json.content))
+        	{
+	        	json.content.forEach(
+	        		item => 
+	        		{
+		        		const content = JSHTML_Builder.importJson(item,elementBlockParent);
+		            	elementBlockParent.addElement(content);
+	   				}
+	   			);
+	        }
+            return elementBlockParent;
 		}
 		else
 		{
-	        return JSHTML_Builder.importJson(json, parent);
+	        console.log("Error: to ImageElement use json.type = 'ImageElement'");
+			return null;
 		}
 	}
 
 	//override
-	addElements(element)
+	addElement(element)
 	{
-		super.addElements(element);
+		super.addElement(element);
 		element.setId();
 		element.makeVisible(this.visibleContent);
 	} 
@@ -62,6 +72,9 @@ class ClickShow extends BE_Heading
 	        }.bind(this));
 	    }
 	}
+
+
+
 
 	toggleVisibleContent()
 	{

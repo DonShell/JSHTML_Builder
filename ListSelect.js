@@ -4,26 +4,30 @@ class ListSelect extends BE_Heading {
 	static createFromJSON(json, parent = null)
 	{
 	    //if it's a block of elements
-	    if (json.ListSelect && Array.isArray(json.ListSelect.content) && json.ListSelect.title) {
+	    if (json.type == "ListSelect" && json.title) {
 	        
 	        const parentBlock = new ListSelect(
 	            parent, 
-	            json.ListSelect.title,
-	            json.ListSelect.class
+	            json.title,
+	            json.classSelected
 	        );
-	        json.ListSelect.content.forEach(item => {
-	            const content = ListSelect.createFromJSON(item, parentBlock);
-	            if(content)
-	            {
-	              	parentBlock.addElement(content);
-	            }
-	            
-	        });
+	        if(Array.isArray(json.content))
+	        {
+		        json.content.forEach(item => {
+		            const content = JSHTML_Builder.importJson(item, parentBlock);
+		            if(content)
+		            {
+		              	parentBlock.addElement(content);
+		            }
+		            
+		        });
+	        }
 	        return parentBlock;
 	    } 
 	    else
 	    {	
-	        return JSHTML_Builder.importJson(json, parent);
+	        console.log("Error: to ListSelect use json.type = 'ListSelect'");
+			return null;
 	    }
 	}
 
@@ -89,6 +93,23 @@ class ListSelect extends BE_Heading {
         element.selected = true;
         this.selected = element;
         this.addClassOfElement(this.selected,"selected"); // Add class "selected" to element HTML
+    }
+    getSelected() 
+    {
+      return this.selected;
+    }
+    
+    getValue()
+    {
+ 		let element = this.getSelected();
+ 		if(element)
+ 		{
+    		return element.getValue();
+ 		}
+ 		else
+ 		{
+ 			return null;
+ 		}
     }
 
     unsetSelected(element) {
