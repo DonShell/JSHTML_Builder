@@ -1,3 +1,4 @@
+const HeaderAndElements = require('./HeaderAndElements.js');
 class InstagramContact extends HeaderAndElements
 {
 	static LINK_DEFAULT = "https://www.instagram.com/";
@@ -63,6 +64,6 @@ class InstagramContact extends HeaderAndElements
 		window.open(this.getLink(), '_blank');
 	}
 
-}
+}module.exports = InstagramContact;
 //cssInstagram background: linear-gradient(341deg, rgba(255,240,3,1) 0%, rgba(255,82,31,1) 12%, rgba(255,58,33,1) 30%, rgba(246,37,168,1) 62%, rgba(238,15,124,1) 77%, rgba(174,23,190,1) 88%, rgba(0,31,255,1) 99%);
 

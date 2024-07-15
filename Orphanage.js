@@ -1,9 +1,12 @@
+const document = require('./dom');
+
 class Orphanage
 {
 	idPrefix = "orphan_"; 
 
 	constructor(htmlParent = document.body, element = null)
 	{
+		
 		if (!htmlParent && htmlParent.nodeType == undefined)
 		{
 			//InvalidHtmlParent or not declared
@@ -64,3 +67,4 @@ class Orphanage
 
 }
 
+module.exports = Orphanage;

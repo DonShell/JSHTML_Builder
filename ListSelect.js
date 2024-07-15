@@ -1,3 +1,4 @@
+const BE_Heading = require('./BE_Heading.js');
 class ListSelect extends BE_Heading {
     selected = null;
 
@@ -120,3 +121,4 @@ class ListSelect extends BE_Heading {
         }
     }
 }
+module.exports = ListSelect;

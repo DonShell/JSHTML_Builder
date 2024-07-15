@@ -1,3 +1,4 @@
+const Element = require('./Element.js');
 class HeaderAndElements extends Element
 {
 
@@ -223,3 +224,4 @@ class HeaderAndElements extends Element
 		}
 	}
 }
+module.exports = HeaderAndElements;

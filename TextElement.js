@@ -1,3 +1,6 @@
+const Element = require('./Element.js');
+const document = require('./dom');
+
 class TextElement extends Element 
 {
 	constructor(parent, content = "") {
@@ -12,6 +15,7 @@ class TextElement extends Element
 	//override
 	static createFromJSON(json,parent)
 	{
+		console.log("content: " + json);
 		if(json.type == "TextElement")
 		{
 			if (json.text)
@@ -53,5 +57,10 @@ class TextElement extends Element
 	{
 		super.setContent(text);
 		this.HTMLelement.textContent = this.content;
+		console.log("text: " + text);
+		console.log("html: " + this.HTMLelement);
 	}
 }
+
+
+module.exports = TextElement;

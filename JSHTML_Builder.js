@@ -1,8 +1,68 @@
 //VERSION: 0.1
 //write by: DonShell - 03/30/2024
+const Orphanage = require('./Orphanage.js');
+const Element = require('./Element.js');
+const HeaderAndElements = require('./HeaderAndElements.js');
+const BlockOfElements = require('./BlockOfElements');
+const BE_Heading = require('./BE_Heading');
+const TextElement = require('./TextElement');
+const ImageElement = require('./ImageElement');
+const ElementsHTML = require('./ElementsHTML');
+const ElementsPage = require('./ElementsPage');
+const PageManeger = require('./PageManeger');
+const CardItem = require('./CardItem');
+const CardModel1 = require('./CardModel1');
+const ClickShow = require('./ClickShow');
+const InstagramContact = require('./InstagramContact');
+const ListCards = require('./ListCards');
+const ListSelect = require('./ListSelect');
+const WhatsAppContact = require('./WhatsAppContact');
 
-class JSHTML_Builder
+function importJson(json,parent = null)
 {
+
+		console.log("processando json: " + json);
+	return JSHTML_Builder.importJson(json,parent);
+}
+
+class JSHTML_Builder {
+	// static Orphanage = Orphanage;
+	// static Element = Element;
+	// static BlockOfElements = BlockOfElements;
+	// static HeaderAndElements = HeaderAndElements;
+	// static BE_Heading = BE_Heading;
+	// static TextElement = TextElement;
+	// static CardItem = CardItem;
+	// static CardModel1 = CardModel1;
+	// static ClickShow = ClickShow;
+	// static ElementsHTML = ElementsHTML;
+	// static ElementsPage = ElementsPage;
+	// static ImageElement = ImageElement;
+	// static InstagramContact = InstagramContact;
+	// static ListCards = ListCards;
+	// static ListSelect = ListSelect;
+	// static PageManeger = PageManeger;
+	// static WhatsAppContact = WhatsAppContact;
+    constructor() {
+        // this.Orphanage = Orphanage;
+        // this.Element = Element;
+        // this.BlockOfElements = BlockOfElements;
+        // this.HeaderAndElements = HeaderAndElements;
+		// this.BE_Heading = BE_Heading;
+        // this.TextElement = TextElement;
+        // this.CardItem = CardItem;
+        // this.CardModel1 = CardModel1;
+        // this.ClickShow = ClickShow;
+        // this.ElementsHTML = ElementsHTML;
+        // this.ElementsPage = ElementsPage;
+        // this.ImageElement = ImageElement;
+        // this.InstagramContact = InstagramContact;
+        // this.ListCards = ListCards;
+        // this.ListSelect = ListSelect;
+        // this.PageManeger = PageManeger;
+        // this.WhatsAppContact = WhatsAppContact;
+    }
+
 	static importJson(json, parent = null)
 	{
 		var element = null;
@@ -13,7 +73,6 @@ class JSHTML_Builder
 		switch(json.type)
 		{
 			case "TextElement":
-
 				element = TextElement.createFromJSON(json,parent);
 				break;
 
@@ -163,3 +222,25 @@ class JSHTML_Builder
 	}
 
 }
+
+module.exports = {
+    JSHTML_Builder,
+    importJson,
+    Orphanage,
+    Element,
+    HeaderAndElements,
+    BlockOfElements,
+    BE_Heading,
+    TextElement,
+    ImageElement,
+    ElementsHTML,
+    ElementsPage,
+    PageManeger,
+    CardItem,
+    CardModel1,
+    ClickShow,
+    InstagramContact,
+    ListCards,
+    ListSelect,
+    WhatsAppContact
+};

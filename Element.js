@@ -1,3 +1,6 @@
+const JSHTML_Builder = require('./JSHTML_Builder');
+const document = require('./dom');
+
 //abstract class
 class Element {
 	static TEXT_CATEGORY = 'Text';
@@ -181,6 +184,11 @@ class Element {
 		return !(Object.getOwnPropertyNames(this.constructor.prototype).includes(name))
 	}
 
+	getParent()
+	{
+		return this.parent ? this.parent : null;
+	}
+
 	setParent(parent)
 	{
 
@@ -200,13 +208,11 @@ class Element {
 
 	createHTML() 
 	{
-		if (!this.HTMLelement)
-		{
-			this.HTMLelement = document.createElement(this.getHTMLElementType());	
-		}
-		this.updateHTML();
-	}
-
+		if (!this.HTMLelement) {
+            this.HTMLelement = document.createElement(this.getHTMLElementType());
+        }
+        this.updateHTML();
+    }
 
 
 	updateHTML()
@@ -308,7 +314,7 @@ class Element {
 	{
 		this.validateToSetInHTML(this);
 		this.setId();
-		this.parent.setInHTML(this);
+		//this.parent.setInHTML(this);
 		this.makeVisible(visible);
 	}
 
@@ -455,3 +461,5 @@ class Element {
     	return element;
 	}
 }
+
+module.exports = Element;

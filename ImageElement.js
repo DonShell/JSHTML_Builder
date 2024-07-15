@@ -1,3 +1,5 @@
+const Element = require('./Element.js');
+
 class ImageElement extends Element 
 {
 	constructor(parent, content) 
@@ -38,3 +40,4 @@ class ImageElement extends Element
 		return "{ image: url('" + this.content + "')}";
 	}
 }
+module.exports = ImageElement;

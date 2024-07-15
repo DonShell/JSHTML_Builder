@@ -1,3 +1,4 @@
+const BE_Heading = require('./BE_Heading.js');
 class WhatsAppContact extends BE_Heading
 {
 	static LINK_WHATSAPP_ICON = 'https://cdn-icons-png.flaticon.com/512/124/124034.png';
@@ -340,3 +341,5 @@ class PhoneNumber
 	}
 
 }
+module.exports = PhoneNumber;
+module.exports = WhatsAppContact;

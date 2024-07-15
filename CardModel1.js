@@ -1,4 +1,5 @@
-class CardModel1 extends CardItem
+const BE_Heading = require('./CardItem.js');
+class CardModel1 extends BE_Heading
 {
 	static createFromJSON(json, parent = null,classCreator = CardModel1) 
 	{
@@ -23,3 +24,4 @@ class CardModel1 extends CardItem
 }
 
 
+module.exports = CardModel1;

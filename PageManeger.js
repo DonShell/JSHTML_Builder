@@ -1,3 +1,5 @@
+const BlockOfElements = require('./BlockOfElements.js');
+const ElementsPage = require('./ElementsPage.js');
 class PageManeger extends BlockOfElements
 {
 	constructor()
@@ -10,12 +12,16 @@ class PageManeger extends BlockOfElements
 	{
 		let newPage = new ElementsPage(name, visible);
 
-
 		this.pageList[this.pageList.length] = newPage;
 
 		newPage.setPathJson(path);
 
 		newPage.processData();
+
+		if(visible)
+		{
+			this.inicializeAllPages();
+		}
 
 	}
 
@@ -23,7 +29,7 @@ class PageManeger extends BlockOfElements
 	{
 		for (var i = 0; i < this.pageList.length; i++) {
 
-			let elementsPage = this.pageList[i];
+			const elementsPage = this.pageList[i];
 
 			if(! elementsPage.jsonConstructor)
 			{
@@ -32,12 +38,20 @@ class PageManeger extends BlockOfElements
 			}
 			if(!elementsPage.content)
 			{
-				elementsPage.generateJsBuilderFromJson();
-
 				elementsPage.setParent(this);
-				this.addElement(elementsPage);
+
+				await elementsPage.generateJsBuilderFromJson();
+ 	           	console.log("HTML loaded: " + elementsPage.content.getHTMLElement().outerHTML);
+
+				this.addElement(elementsPage.content);
 			}
 		}
+        
+        console.log("HTML loaded on PageManeger: " + this.getHTMLElement().outerHTML);
+        console.log("content PageManeger: " +  this.getHTMLElement().outerHTML);
+
 	}
 
+
 }
+module.exports = PageManeger; 

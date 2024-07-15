@@ -1,4 +1,5 @@
 //estilo de elementos
+const BE_Heading = require('./BE_Heading.js');
 
 //BlocoDeElementos para com tratamento especial para title
 class ClickShow extends BE_Heading 
@@ -95,3 +96,4 @@ class ClickShow extends BE_Heading
 
 }
 
+module.exports = ClickShow;

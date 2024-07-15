@@ -1,3 +1,5 @@
+const BlockOfElements = require('./BlockOfElements.js');
+
 class BE_Heading extends BlockOfElements
 { 
 	//override
@@ -99,3 +101,5 @@ class BE_Heading extends BlockOfElements
 
 	}
 }
+
+module.exports = BE_Heading;

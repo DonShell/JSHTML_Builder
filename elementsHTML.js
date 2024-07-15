@@ -1,3 +1,5 @@
+const Element = require('./Element.js');
+const TextElement = require('./TextElement.js');
 class TextAreaElement extends TextElement
 {
 	static HTML_ELEMENT_TYPE = 'textarea';
@@ -15,6 +17,7 @@ class TextAreaElement extends TextElement
 		return this.HTMLelement.value;
 	}
 }
+module.exports = TextAreaElement;
 class InputElement extends TextElement
 {
 	static ELEMENT_TYPE = "Input";
@@ -36,6 +39,7 @@ class InputElement extends TextElement
 		this.HTMLelement.value = text;
 	}
 }
+module.exports = InputElement;
 class InputTextElement extends InputElement
 {
 	static ELEMENT_TYPE = "InputText";
@@ -47,6 +51,9 @@ class InputTextElement extends InputElement
 		this.HTMLelement.setAttribute('type','text');
 	}
 }
+
+module.exports = InputTextElement;
+
 
 class InputButtonElement extends InputElement
 {
@@ -92,6 +99,8 @@ class InputButtonElement extends InputElement
 		return false;
 	}
 }
+module.exports = InputButtonElement;
+
 class IframeElement extends Element
 {
 
@@ -135,3 +144,4 @@ class IframeElement extends Element
 		this.HTMLelement.setAttribute("src",url);
 	}
 }
+module.exports = IframeElement;

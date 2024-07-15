@@ -1,0 +1,4 @@
+feita atualização em todas as paginas com os devidos requires e exposts do Node.Js
+algumas atualizações no modo de carregamento do arvivo json no arquivo ElementsPage e PageManeger
+
+necessario revisar todos os importFromJson de cada classe colocando a referencia do JSHTML_Builder como na classe BlockOfElements

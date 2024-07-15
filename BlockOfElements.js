@@ -1,3 +1,4 @@
+const Element = require('./Element.js');
 // Holds a group of elements
 class BlockOfElements extends Element 
 {
@@ -7,6 +8,8 @@ class BlockOfElements extends Element
 		//if it's a block of elements
 		if (json.type == "BlockOfElements")
 		{
+			const JSHTML_Builder = require('./JSHTML_Builder'); // Importar localmente 
+
 			const parentBlock = new BlockOfElements(parent);
 
 			if(parent)
@@ -110,6 +113,7 @@ class BlockOfElements extends Element
 
 	addElement(element) 
 	{
+
 		if (!this.elementIsLinked(element)) 
 		{
 			this.content.push(element);
@@ -117,6 +121,7 @@ class BlockOfElements extends Element
 		}
 		if (!this.elementIsInHTML(element)) 
 		{
+			console.log("adding element: " +  element.getHTMLElement().outerHTML);
 			this.HTMLelement.appendChild(element.getHTMLElement());
 		}
 		element.addClass(this.getElementClassDefault());
@@ -249,3 +254,4 @@ class BlockOfElements extends Element
 		return ret;
 	}
 }
+module.exports = BlockOfElements;

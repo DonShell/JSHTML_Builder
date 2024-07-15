@@ -1,3 +1,4 @@
+const BE_Heading = require('./BE_Heading.js');
 class CardItem extends BE_Heading
 {
 	static createFromJSON(json, parent = null,classCreator = CardItem) {
@@ -203,3 +204,5 @@ class HexColor
 	}
 
 }
+
+module.exports = CardItem;

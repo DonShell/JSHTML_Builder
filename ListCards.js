@@ -1,3 +1,4 @@
+const HeaderAndElements = require('./HeaderAndElements.js');
 class ListCards extends HeaderAndElements
 {
 	static DEFAULT_CLASS_CARD = "cardItem";
@@ -79,3 +80,4 @@ class ListCards extends HeaderAndElements
 	}
 
 }
+module.exports = ListCards;
