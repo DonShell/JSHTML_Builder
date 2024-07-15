@@ -19,6 +19,8 @@ class ListCards extends HeaderAndElements
         */
 	    //if it's a block of elements
 	    if ((json.type == classCreator.name)) {
+		
+			const JSHTML_Builder = require('./JSHTML_Builder'); // Importar localmente 
 
 	    	const title = json.title ? json.title : "Catalogy:";
 	        

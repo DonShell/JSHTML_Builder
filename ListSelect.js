@@ -6,7 +6,8 @@ class ListSelect extends BE_Heading {
 	{
 	    //if it's a block of elements
 	    if (json.type == "ListSelect" && json.title) {
-	        
+	        const JSHTML_Builder = require('./JSHTML_Builder'); // Importar localmente 
+
 	        const parentBlock = new ListSelect(
 	            parent, 
 	            json.title,

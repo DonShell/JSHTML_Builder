@@ -99,6 +99,7 @@ class HeaderAndElements extends Element
 
 	    //if it's a block of elements
 	    if ((json.type == classCreator.name)) {
+			const JSHTML_Builder = require('./JSHTML_Builder'); // Importar localmente 
 
 	    	json.title = json.title ? json.title : "";
 

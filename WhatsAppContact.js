@@ -12,6 +12,8 @@ class WhatsAppContact extends BE_Heading
 		//se for um bloco de elementos
 		if (json.type == "WhatsAppContact")
 		{
+		const JSHTML_Builder = require('./JSHTML_Builder'); // Importar localmente 
+
 			const number = json.number ? json.number : null;
 			const message = json.message ? json.message : null;
       		const messageBox = Boolean(json.messageBox);

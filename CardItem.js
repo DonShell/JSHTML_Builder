@@ -5,6 +5,8 @@ class CardItem extends BE_Heading
 
 		if (json.type == classCreator.name)
 		{
+			const JSHTML_Builder = require('./JSHTML_Builder'); // Importar localmente 
+
 			const title = json.title ? json.title : "item";
 
       		const elementBlockParent = new classCreator(

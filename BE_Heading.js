@@ -12,6 +12,7 @@ class BE_Heading extends BlockOfElements
 
 		//if it's a block of elements
 		if ((json.type == "BE_Heading")) {
+			const JSHTML_Builder = require('./JSHTML_Builder'); // Importar localmente 
 
 			const title = json.title ? json.title : "";
 			
